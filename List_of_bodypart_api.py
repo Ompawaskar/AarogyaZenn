@@ -10,13 +10,13 @@ def fetch_bodyParts():
 
     try:
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+        response.raise_for_status() 
         body_parts = response.json()
         return body_parts
     except requests.exceptions.RequestException as e:
         print("Error fetching body parts:", e)
         return []
 
-# Example usage:
+
 body_parts = fetch_bodyParts()
 

@@ -99,7 +99,7 @@ class WorkoutPage:
         self.body_part_menu.pack(pady=10)
         self.card_frame.pack(pady=10)
 
-        # Toggle the visibility of the WorkoutPage when shown
+      
         self.master.geometry('800x600')
         self.master.title('Workout Page')
 

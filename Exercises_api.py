@@ -10,6 +10,4 @@ def fetch_exercises():
     response = requests.get(url, headers=headers, params=querystring)
     return response.json()
 
-# Example usage:
-# exercises = fetch_exercises()
-# print(exercises)
+

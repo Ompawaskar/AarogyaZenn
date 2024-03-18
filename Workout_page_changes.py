@@ -164,7 +164,7 @@ canvas.create_window((0, 0), window=inner_frame, anchor="nw")
 
 
 num_exercises = len(exercises)
-num_columns = 5  # Number of columns per row
+num_columns = 5  
 num_rows = -(-num_exercises // num_columns) 
 
 display_exercises(exercises)

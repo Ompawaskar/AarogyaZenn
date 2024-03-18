@@ -13,7 +13,10 @@ data = {
     'query': f'{food}',
 }
 
-response = requests.post(url, headers=headers, json=data)
+try:
+    response = requests.post(url, headers=headers, json=data)
+except Exception as e:
+    print("Error fetching data",e)
 
 if response.status_code == 200:
     print(response.json())

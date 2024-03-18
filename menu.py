@@ -1,5 +1,6 @@
-
 import tkinter as tk
+import customtkinter as ctk
+from customtkinter import *
 
 class Menu(tk.Frame):
     def __init__(self, master=None, commands=[]):
@@ -14,7 +15,13 @@ class Menu(tk.Frame):
             menu_button.pack(fill=tk.X, padx=10, pady=5)
 
     def show(self):
-        self.place(x=0, y=50, relheight=1, width=200)
+        self.place(x=0, y=50, relheight=1, width=400)
 
     def hide(self):
         self.place_forget()
+
+    def set_width(self, width):
+        self.configure(width=width)
+
+    def set_height(self, height):
+        self.configure(height=height)

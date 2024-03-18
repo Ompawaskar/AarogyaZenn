@@ -4,7 +4,7 @@ from menu import Menu
 import customtkinter as ctk
 from customtkinter import *
 
-ctk.set_appearance_mode("Dark") 
+ctk.set_appearance_mode("Light") 
 def open_dashboard():
     dashboard.show()
     dashboard_label.configure(text="Dashboard Page Opened")
@@ -34,9 +34,10 @@ def toggle_menu():
         menu_visible.set(True)
 
 root = CTk()
-root.geometry('300x500')
+root.geometry('1200x600')
 root.title('Arogya Zenn')
 root.configure(bg='#333333')
+root.resizable(False,False)
 
 menu_visible = ctk.BooleanVar()
 menu_visible.set(False)
@@ -52,9 +53,15 @@ title_label.pack(side=ctk.LEFT, padx=(0, 10))
 
 dashboard = Dashboard(root)
 dashboard.pack(pady=10)
+dashboard.set_width(800)
+dashboard.set_height(400)
+
 
 dashboard_label = ctk.CTkLabel(root, text="Welcome to Your Dashboard")
 dashboard_label.pack(pady=10)
 
 menu = Menu(root, commands=[('Dashboard', open_dashboard), ('Nutrition', open_nutrition), ('Workout', open_workout), ('Logout', logout)])
+menu.pack(side=ctk.LEFT, fill=ctk.Y)
+
+dashboard.pack(side=ctk.RIGHT, fill=ctk.BOTH, expand=True)
 root.mainloop()

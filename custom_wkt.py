@@ -18,9 +18,8 @@ class CustomWorkoutPage(tk.Toplevel):
         self.exercises_frame = tk.Frame(self, bg="#E0E0E0")
         self.exercises_frame.pack(pady=5)
 
-        self.exercise_vars = {}  # Dictionary to hold IntVar for checkboxes
-        self.exercise_widgets = {}  # Dictionary to hold exercise widgets
-
+        self.exercise_vars = {} 
+        self.exercise_widgets = {} 
         self.scrollbar = tk.Scrollbar(self.exercises_frame, orient="vertical")
         self.scrollbar.pack(side=tk.RIGHT, fill="y")
 
@@ -32,25 +31,25 @@ class CustomWorkoutPage(tk.Toplevel):
         self.remove_button = tk.Button(self, text="Remove Selected", command=self.remove_selected_exercises)
         self.remove_button.pack(pady=5)
 
-        # Call close_window on window close
+        
         self.protocol("WM_DELETE_WINDOW", self.close_window)
 
     def update_exercises_list(self, exercises):
-        # Update existing exercise frames
+       
         for exercise in exercises:
             if exercise['name'] in self.exercise_widgets:
                 label = self.exercise_widgets[exercise['name']]['label']
                 label.config(text=exercise['name'])
 
                 var = self.exercise_vars[exercise['name']]
-                if var.get() == 1:  # Check if previously selected
-                    var.set(1)  # Set checkbox to checked state
+                if var.get() == 1:  
+                    var.set(1) 
 
             else:
-                # Create new exercise frame
+                
                 exercise_frame = tk.Frame(self.exercises_listbox, bg="#E0E0E0")
                 exercise_frame.pack(fill="x", padx=5, pady=2)
-                var = tk.IntVar(value=0)  # Create IntVar for checkbox
+                var = tk.IntVar(value=0) 
                 self.exercise_vars[exercise['name']] = var
 
                 checkbox = tk.Checkbutton(exercise_frame, variable=var, bg="#E0E0E0")
@@ -59,7 +58,7 @@ class CustomWorkoutPage(tk.Toplevel):
                 label = tk.Label(exercise_frame, text=exercise['name'], bg="#E0E0E0")
                 label.pack(side=tk.LEFT)
 
-                # Bind click event to display detailed information
+               
                 label.bind("<Button-1>", lambda event, ex=exercise: self.show_exercise_details(ex))
 
                 self.exercise_widgets[exercise['name']] = {'frame': exercise_frame, 'label': label}
@@ -68,17 +67,16 @@ class CustomWorkoutPage(tk.Toplevel):
         selected_exercises = [name for name, var in self.exercise_vars.items() if var.get() == 1]
         for name in selected_exercises:
             frame = self.exercise_widgets[name]['frame']
-            frame.destroy()  # Destroy the exercise frame
-            del self.exercise_widgets[name]  # Remove exercise from widgets dictionary
-            del self.exercise_vars[name]  # Remove corresponding IntVar
-
+            frame.destroy()  
+            del self.exercise_widgets[name] 
+            del self.exercise_vars[name]  
     def show_exercise_details(self, exercise):
-        # Create a new Toplevel window
+       
         exercise_window = tk.Toplevel(self)
         exercise_window.title("Exercise Details")
         exercise_window.configure(bg="#E0E0E0")
 
-        # Construct detailed information message
+       
         detailed_info = f"Exercise Name: {exercise.get('name')}\n" \
                         f"Body Part: {exercise.get('bodyPart')}\n" \
                         f"Equipment: {exercise.get('equipment')}\n" \
@@ -87,39 +85,39 @@ class CustomWorkoutPage(tk.Toplevel):
                         f"Instructions:\n" \
                         f"{'; '.join(exercise.get('instructions'))}"
 
-        # Create a label to display exercise details
+       
         details_label = tk.Label(exercise_window, text=detailed_info, bg="#E0E0E0", fg="#333333", font=("Helvetica", 12), wraplength=400)
         details_label.pack(pady=10, padx=10)
 
-        # Load GIF image
+        
         gif_url = exercise.get('gifUrl')
         if gif_url:
             response = requests.get(gif_url)
             if response.status_code == 200:
-                # Convert image data to PhotoImage format
+               
                 img_data = response.content
                 img = Image.open(io.BytesIO(img_data))
 
-                # Create a label to display GIF image
+                
                 gif_label = tk.Label(exercise_window, bg="#E0E0E0")
                 gif_label.pack(pady=10)
 
-                # Create a function to update the GIF image
+              
                 def update_gif(frame_num=0):
                     frame = img.seek(frame_num)
                     frame = img.copy().convert('RGBA')
                     photo = ImageTk.PhotoImage(frame)
                     gif_label.config(image=photo)
-                    gif_label.image = photo  # Keep reference to the image to prevent garbage collection
+                    gif_label.image = photo  
                     exercise_window.after(200, update_gif, (frame_num + 1) % img.n_frames)
 
-                # Start updating the GIF image
+                
                 update_gif()
             else:
-                # Display error message if unable to fetch GIF image
+              
                 messagebox.showerror("Error", "Failed to fetch GIF image.")
         else:
-            # Display message if GIF URL is not provided
+           
             messagebox.showinfo("Info", "No GIF image available for this exercise.")
 
     def clear_exercises(self):
@@ -140,11 +138,11 @@ def open_custom_workout_page():
         exercises = fetch_exercises()
         custom_workout_page.update_exercises_list(exercises)
     else:
-        custom_workout_page.deiconify()  # Show the window if it's hidden
+        custom_workout_page.deiconify() 
 
 def fetch_exercises(exercise_id=None):
     url = "https://exercisedb.p.rapidapi.com/exercises"
-    querystring = {"limit": "1324"}  # Fetching all exercises
+    querystring = {"limit": "1324"}  
     if exercise_id:
         querystring["id"] = exercise_id
     headers = {

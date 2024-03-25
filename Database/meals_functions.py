@@ -10,6 +10,7 @@ def add_meal(meal):
             print("Error occured while adding meal" , e)
 
 def delete_meal(username, meal_date, meal_type):
+  
        try:
          db = connection()
          meals_collection = db["meals"]

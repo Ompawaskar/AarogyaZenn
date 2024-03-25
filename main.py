@@ -1,5 +1,5 @@
 import tkinter as tk
-from dashboard import Dashboard
+from dashboard2 import Dashboard
 from menu import Menu
 import customtkinter as ctk
 from customtkinter import *

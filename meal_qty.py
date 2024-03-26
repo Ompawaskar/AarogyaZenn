@@ -2,6 +2,7 @@ import customtkinter
 import tkinter as tk
 from PIL import Image,ImageTk
 import os
+import globalStore
 
 class add_meals2(customtkinter.CTk):
     APP_NAME = "Add Meals"
@@ -26,6 +27,13 @@ class add_meals2(customtkinter.CTk):
         # self.main_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "food1.png")))
         image = Image.open("./assets/images/food1.png")
         photo = ImageTk.PhotoImage(image)
+
+        # self.protien_image = None
+        # self.carbs_image = None
+        # self.fats_image = None
+        # self.fiber_image = None
+        # self.main_image= None
+        # photo = None
         
         self.top_label = customtkinter.CTkLabel(self.top_frame,image=photo,text="")
         self.top_label.pack(fill="both")
@@ -89,8 +97,13 @@ class add_meals2(customtkinter.CTk):
         self.fiber_qty = customtkinter.CTkLabel(self.fiber_frame,text="12g")
         self.fiber_qty.pack()
 
-        self.submit_button = customtkinter.CTkButton(self.bottom_frame,fg_color='orange',text="Add Food",text_color='white')
+        self.submit_button = customtkinter.CTkButton(self.bottom_frame,fg_color='orange',text="Add Food",text_color='white',command=self.submit_meal)
         self.submit_button.grid(row=2,column=0,columnspan = 4,pady=10,sticky = 'sew')
+
+    def submit_meal(self):
+        globalStore.user_meal['protien'] = 30
+        print(globalStore.user_meal)
+        
 
 
 if __name__ == '__main__':

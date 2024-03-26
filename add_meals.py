@@ -2,19 +2,19 @@ import customtkinter
 import tkinter as tk
 from PIL import Image
 import meal_qty
+from globalStore import user_meal
 
 class add_meals(customtkinter.CTk):
     APP_NAME = "Track Meals"
     WIDTH =  400
     HEIGHT = 550
 
-    def __init__(self,meals = '', *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title(add_meals.APP_NAME)
         self.geometry(str(add_meals.WIDTH) + "x" + str(add_meals.HEIGHT))
         self.minsize(add_meals.WIDTH, add_meals.HEIGHT)
         self.config(bg='white')
-        print(meals)
         # self.appearance_mode = "Light"
         # self.resizable(False,False)
 

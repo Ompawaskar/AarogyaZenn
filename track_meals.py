@@ -3,6 +3,7 @@ from tkinter import PhotoImage
 from PIL import ImageTk, Image
 import os
 import add_meals
+import globalStore
 
 
 class Track_meals(customtkinter.CTk):
@@ -173,7 +174,10 @@ class Track_meals(customtkinter.CTk):
             print("Error loading images:", e)
 
     def open_add_meals(self,meal):
-        add_meals.add_meals(meals = meal).mainloop()
+        add_meals.add_meals().mainloop()
+        globalStore.user_meal['meal_type'] = "Breakfast"
+        print(globalStore.user_meal)
+        
 
 
 if __name__ == '__main__':

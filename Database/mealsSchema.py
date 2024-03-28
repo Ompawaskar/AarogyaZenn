@@ -1,22 +1,31 @@
 from db_connection import connection
 from datetime import datetime
 from meals_functions import add_meal
+from datetime import datetime
+
+date_string = "2024-03-29"
+parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
+
 
 meal_example = {
-    "Total_Calories": 500.0,
-    "protein": 25.0,
-    "fats": 20.0,
-    "sugar": 10.0,
-    "carbohydrates": 60.0,
-    "username": "AtharvaYadav",
-    "meal_type": "breakfast",
-    "date": datetime.now()  # Assuming current date and time
+    "Total_Calories": 500.25,
+    "protein": 25.75,
+    "fats": 20.5,
+    "fiber": 8.3,
+    "carbohydrates": 60.2,
+    "username": "john_doe",
+    "meal_type": "lunch",
+    "meal_name": "Chicken Salad",
+    "units": "grams",
+    "quantity": 300.0,  
+    "date": parsed_date
 }
+
 
 schema_validation = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": ["Total_Calories", "protein", "fats", "sugar", "carbohydrates", "username", "meal_type", "date"],
+        "required": ["Total_Calories", "protein", "fats", "fiber", "carbohydrates", "username", "meal_type", "meal_name", "units", "quantity", "date"],
         "properties": {
             "Total_Calories": {
                 "bsonType": "double",
@@ -30,7 +39,7 @@ schema_validation = {
                 "bsonType": "double",
                 "description": "must be a double and is required"
             },
-            "sugar": {
+            "fiber": {
                 "bsonType": "double",
                 "description": "must be a double and is required"
             },
@@ -45,6 +54,18 @@ schema_validation = {
             "meal_type": {
                 "bsonType": "string",
                 "description": "must be a string and is required"
+            },
+            "meal_name": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "units": {
+                "bsonType": "string",
+                "description": "must be a string and is required"
+            },
+            "quantity": {
+                "bsonType": "double",
+                "description": "must be a double and is required"
             },
             "date": {
                 "bsonType": "date",
@@ -63,7 +84,7 @@ def create_collection():
     except Exception as e:
         print("Error creating collection", e)
 
-#create_collection()
+# create_collection()
         
 #Example user
 add_meal(meal_example)

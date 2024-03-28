@@ -13,6 +13,7 @@ class Track_meals(customtkinter.CTk):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.load_images()
         self.title(Track_meals.APP_NAME)
         self.geometry(str(Track_meals.WIDTH) + "x" + str(Track_meals.HEIGHT))
         self.minsize(Track_meals.WIDTH, Track_meals.HEIGHT)
@@ -25,7 +26,7 @@ class Track_meals(customtkinter.CTk):
         # self.resized_image1 = customtkinter.CTkImage(Image.open(os.path.join(image_path, "CustomTkinter_logo_single.png")), size=(26, 26))
         # self.resized_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "CustomTkinter_logo_single.png")), size=(26, 26))
          
-        self.load_images()
+       
        
         # Buttons Frame
         self.frame1 = customtkinter.CTkFrame(self)
@@ -82,7 +83,7 @@ class Track_meals(customtkinter.CTk):
         self.morning_snack_calories = customtkinter.CTkLabel(self.morning_snack_frame, text="0 of 100 cals",text_color='#949494')  # Changed label text
         self.morning_snack_calories.grid(row=0, column=1)
 
-        self.morning_snack_button = customtkinter.CTkButton(self.morning_snack_frame, image=self.resized_image, width=30, text="", fg_color='transparent')
+        self.morning_snack_button = customtkinter.CTkButton(self.morning_snack_frame, image=self.resized_image, width=30, text="", fg_color='transparent', command=lambda: self.open_add_meals(meal='morning_snack'))
         self.morning_snack_button.grid(row=0, column=2,padx = 5)
 
         # Meals Frame
@@ -106,7 +107,7 @@ class Track_meals(customtkinter.CTk):
         self.lunch_calories = customtkinter.CTkLabel(self.lunch_frame, text="0 of 337 cals",text_color='#949494')  # Changed label text
         self.lunch_calories.grid(row=0, column=1)
 
-        self.lunch_button = customtkinter.CTkButton(self.lunch_frame, image=self.resized_image, width=30, text="", fg_color='transparent')
+        self.lunch_button = customtkinter.CTkButton(self.lunch_frame, image=self.resized_image, width=30, text="", fg_color='transparent', command=lambda: self.open_add_meals(meal='lunch'))
         self.lunch_button.grid(row=0, column=2,padx=5)
 
         # Meals Frame
@@ -130,7 +131,7 @@ class Track_meals(customtkinter.CTk):
         self.evening_snack_calories = customtkinter.CTkLabel(self.evening_snack_frame, text="0 of 150 cals",text_color='#949494')  # Changed label text
         self.evening_snack_calories.grid(row=0, column=1)
 
-        self.evening_snack_button = customtkinter.CTkButton(self.evening_snack_frame, image=self.resized_image, width=30, text="", fg_color='transparent')
+        self.evening_snack_button = customtkinter.CTkButton(self.evening_snack_frame, image=self.resized_image, width=30, text="", fg_color='transparent', command=lambda: self.open_add_meals(meal='evening_snack'))
         self.evening_snack_button.grid(row=0, column=2,padx=5)
 
         # Meals Frame
@@ -154,7 +155,7 @@ class Track_meals(customtkinter.CTk):
         self.dinner_calories = customtkinter.CTkLabel(self.dinner_frame, text="0 of 500 cals",text_color='#949494')  # Changed label text
         self.dinner_calories.grid(row=0, column=1)
 
-        self.dinner_button = customtkinter.CTkButton(self.dinner_frame, image=self.resized_image, width=30, text="", fg_color='transparent')
+        self.dinner_button = customtkinter.CTkButton(self.dinner_frame, image=self.resized_image, width=30, text="", fg_color='transparent', command=lambda: self.open_add_meals(meal='dinner'))
         self.dinner_button.grid(row=0, column=2,padx=5)
 
         # Meals Frame
@@ -167,15 +168,16 @@ class Track_meals(customtkinter.CTk):
     def load_images(self):
         try:
             image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./assets/images")
-            self.recipe = customtkinter.CTkImage(Image.open(os.path.join(image_path, "CustomTkinter_logo_single.png")), size=(26, 26))
-            self.resized_image1 = customtkinter.CTkImage(Image.open(os.path.join(image_path, "CustomTkinter_logo_single.png")), size=(26, 26))
-            self.resized_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "CustomTkinter_logo_single.png")), size=(26, 26))
+            self.recipe = customtkinter.CTkImage(Image.open(os.path.join(image_path, "recipe.png")), size=(26, 26))
+            self.resized_image1 = customtkinter.CTkImage(Image.open(os.path.join(image_path, "diet_plan.png")), size=(26, 26))
+            self.resized_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "orange_plus_image.png")), size=(26, 26))
         except Exception as e:
             print("Error loading images:", e)
 
     def open_add_meals(self,meal):
+        globalStore.user_meal['meal_type'] = meal
+        self.destroy()
         add_meals.add_meals().mainloop()
-        globalStore.user_meal['meal_type'] = "Breakfast"
         print(globalStore.user_meal)
         
 

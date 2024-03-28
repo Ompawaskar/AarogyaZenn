@@ -14,3 +14,6 @@ def connection():
     except:
         print("Error connecting to MongoDb!")
         return None
+    
+db = connection()
+meals = db['meals']

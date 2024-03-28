@@ -332,7 +332,8 @@ class Dashboard(customtkinter.CTk):
     def frame_3_button_event(self):
         self.select_frame_by_name("frame_3")
 
-    def open_daily_meals(self):  
+    def open_daily_meals(self):
+        self.destroy()  
         track_meals.Track_meals().mainloop()
         
     def inc_wt(self):

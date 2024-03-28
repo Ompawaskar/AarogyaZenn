@@ -3,6 +3,8 @@ import tkinter as tk
 from PIL import Image
 import meal_qty
 from globalStore import user_meal
+from Nutrition.AutoComplete import auto_complete
+from Nutrition.Nutritionapi_connection import nutritional_info
 
 class add_meals(customtkinter.CTk):
     APP_NAME = "Track Meals"
@@ -51,9 +53,9 @@ class add_meals(customtkinter.CTk):
         self.input_field.bind('<KeyRelease>', self.on_key_release)
 
     def on_key_release(self, event):
-        if event.keysym == "Return":  # Check if Enter key is pressed
+        if event.keysym == "Return" or event.keysym == "space":  # Check if Enter key is pressed
             search_term = self.input_field.get()
-            autocomplete_list = [item for item in self.data if search_term.lower() in item.lower()]
+            autocomplete_list = auto_complete(search_term)
             self.update_autocomplete_list(autocomplete_list)
 
     def on_select(self, event):
@@ -69,6 +71,11 @@ class add_meals(customtkinter.CTk):
             self.autocomplete_listbox.insert(tk.END, item)
     
     def open_meal_qty(self):
-        meal_qty.add_meals2().mainloop()
-# if __name__ == '__main__':
-#     add_meals().mainloop()
+        meal_name = self.input_field.get()
+        user_meal['meal_name'] = meal_name
+        nutritional_json = nutritional_info(meal_name)
+        self.destroy()
+        meal_qty.add_meals2(nutritional_json).mainloop()
+
+if __name__ == '__main__':
+    add_meals().mainloop()

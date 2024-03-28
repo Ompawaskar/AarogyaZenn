@@ -1,4 +1,4 @@
-from db_connection import connection
+from Database.db_connection import connection
 
 def add_meal(meal):
        try:
@@ -21,3 +21,15 @@ def delete_meal(username, meal_date, meal_type):
             print("Meal not found for deletion.")
        except:
             print("Error occured while deleting meal")
+
+def show_meals(username,meal_date,meal_type):
+     try:
+         db = connection()
+         meals_collection = db["meals"]
+         cursor = meals_collection.find({"username": username,
+                                         "date":meal_date,
+                                         "meal_type":meal_type})
+         
+     except Exception as e:
+            print("Error occured while adding meal" , e)
+    

@@ -6,7 +6,13 @@ from PIL import Image
 from Circular_meter import Meter
 from tkinter import PhotoImage
 import track_meals
+from Database.meals_functions import get_nutrition_consumed
+from Database.user_activity_functions import get_water_consumed , update_water_consumed,get_hours_slept,update_sleep_hours
+from Watch.steps_walked import get_user_activity
+from datetime import datetime
 
+date_string = "2024-03-29"
+parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
 
 class Dashboard(customtkinter.CTk):
 
@@ -21,24 +27,40 @@ class Dashboard(customtkinter.CTk):
         self.geometry(str(Dashboard.WIDTH) + "x" + str(Dashboard.HEIGHT))
         self.minsize(Dashboard.WIDTH, Dashboard.HEIGHT)
         self.appearance_mode = "Light"
+        # self.today_date = datetime.today().date()
+        self.today_nutrition_values = get_nutrition_consumed("AtharvaYadav",parsed_date)
+
         self.totalCalories = 2600
-        self.CaloriesUsed = 2400
+        self.CaloriesUsed = self.today_nutrition_values["Total_Calories"]
 
         self.protiens_target = 80 
-        self.protiens_consumed = 40
+        self.protiens_consumed = self.today_nutrition_values["Total_Protein"]
         self.protiens_percent = self.protiens_consumed/self.protiens_target
 
         self.carbs_target = 600
-        self.carbs_consumed = 400
+        self.carbs_consumed = self.today_nutrition_values["Total_Carbohydrates"]
         self.carbs_percent = self.carbs_consumed/self.carbs_target
 
         self.fats_target = 800 
-        self.fats_consumed = 400
+        self.fats_consumed = self.today_nutrition_values["Total_Fats"]
         self.fats_percent = self.fats_consumed/self.fats_target
 
         self.fiber_target = 80 
-        self.fiber_consumed = 10
+        self.fiber_consumed = self.today_nutrition_values["Total_Fiber"]
         self.fiber_percent = self.fiber_consumed/self.fiber_target
+
+        #User Activity
+        self.water_consumed = get_water_consumed("AtharvaYadav",parsed_date)
+        self.calories_burned = get_user_activity(parsed_date)['cals']
+        self.target_calories_burned = 2400
+        self.current_weight = 80
+        self.target_weight = 65
+        self.wt_lost = 4
+        self.max_wt_lost = 15
+        self.steps_walked = get_user_activity(parsed_date)['steps']
+        self.hours_slept = get_hours_slept("AtharvaYadav",parsed_date)
+        
+        
 
         # self.resizable(False, False)
 
@@ -226,12 +248,7 @@ class Dashboard(customtkinter.CTk):
         self.waterr_frame.grid(row=0,column=2)
         
 
-        self.calories_burned = 400
-        self.target_calories_burned = 600
-        self.current_weight = 80
-        self.target_weight = 65
-        self.wt_lost = 4
-        self.max_wt_lost = 15
+        
         #Creating 4 Cards
         self.calorie_burn_meter = Meter(self.cal_burned_frame, metersize=180, padding=0, amountused=self.calories_burned, amounttotal=self.target_calories_burned,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/runner3.png',wedgecolor='#41C9E2',appearance_mode= self.appearance_mode)
@@ -249,8 +266,8 @@ class Dashboard(customtkinter.CTk):
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image= './assets/images/weight.png',wedgecolor='#99BC85',appearance_mode= self.appearance_mode)
         self.target_wt_label = customtkinter.CTkLabel(self.target_wt_frame,text=f"{self.wt_lost} of {self.max_wt_lost}")
         self.target_wt_label2 = customtkinter.CTkLabel(self.target_wt_frame,text="Weight Lost",text_color='#607274')
-        self.add_wt_button = customtkinter.CTkButton(self.target_wt_frame,image=self.plus_image,text ="",fg_color='transparent',width=20)
-        self.minus_wt_button = customtkinter.CTkButton(self.target_wt_frame,image=self.minus_image,text ="",fg_color='transparent',width=20)
+        self.add_wt_button = customtkinter.CTkButton(self.target_wt_frame,image=self.plus_image,text ="",fg_color='transparent',width=20, command=lambda: self.adjust_weight_meter(delta=-1))
+        self.minus_wt_button = customtkinter.CTkButton(self.target_wt_frame,image=self.minus_image,text ="",fg_color='transparent',width=20, command=lambda: self.adjust_weight_meter(delta=1))
         self.target_wt_meter.pack(padx=45,pady=20)
         self.add_wt_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
         self.minus_wt_button.place(relx=0, rely=0.5, anchor='w')
@@ -259,33 +276,36 @@ class Dashboard(customtkinter.CTk):
         # Place minus button on the left
 
 
-        self.steps_meter = Meter(self.steps_frame, metersize=180, padding=0, amountused=2000, amounttotal=10000,
+        self.steps_meter = Meter(self.steps_frame, metersize=180, padding=0, amountused=self.steps_walked, amounttotal=10000,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/boots4.png',wedgecolor='#FBA834',appearance_mode= self.appearance_mode)
         self.steps_label = customtkinter.CTkLabel(self.steps_frame,text="Steps walked Today",text_color='#607274')
-        self.steps_label2 = customtkinter.CTkLabel(self.steps_frame,text="2000")
+        self.steps_label2 = customtkinter.CTkLabel(self.steps_frame,text= self.steps_walked)
 
         self.steps_meter.pack(padx=45,pady=20)
         self.steps_label.pack()
         self.steps_label2.pack()
 
-        self.sleep_meter = Meter(self.watch_frame, metersize=180, padding=0, amountused=5, amounttotal=7,
+        self.sleep_meter = Meter(self.watch_frame, metersize=180, padding=0, amountused=self.hours_slept, amounttotal=7,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/night3.png',wedgecolor='#211C6A',appearance_mode= self.appearance_mode)
         self.sleep_label = customtkinter.CTkLabel(self.watch_frame,text='Hours Slept',text_color='#607274')
-        self.sleep_label2 = customtkinter.CTkLabel(self.watch_frame,text="5")
-
+        self.sleep_label2 = customtkinter.CTkLabel(self.watch_frame,text=self.hours_slept)
+        self.add_sleep_button = customtkinter.CTkButton(self.watch_frame,image=self.plus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_sleep_hours(delta=-0.5))
+        self.minus_sleep_button = customtkinter.CTkButton(self.watch_frame,image=self.minus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_sleep_hours(delta=0.5))
         self.sleep_meter.pack(padx=45,pady=20)
+        self.add_sleep_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
+        self.minus_sleep_button.place(relx=0, rely=0.5, anchor='w')
+       
         self.sleep_label.pack()
         self.sleep_label2.pack()
 
         #Water Meter
-        self.water_consumed = 5
 
         self.waterr_meter = Meter(self.waterr_frame, metersize=180, padding=0, amountused= self.water_consumed, amounttotal=10,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image= './assets/images/water3.png',wedgecolor='#008DDA',appearance_mode= self.appearance_mode)
         self.waterr_label = customtkinter.CTkLabel(self.waterr_frame,text=f"{self.water_consumed} of 10")
         self.waterr_label2 = customtkinter.CTkLabel(self.waterr_frame,text="Glasses consumed",text_color='#607274')
-        self.add_water_button = customtkinter.CTkButton(self.waterr_frame,image=self.plus_image,text ="",fg_color='transparent',width=20)
-        self.minus_water_button = customtkinter.CTkButton(self.waterr_frame,image=self.minus_image,text ="",fg_color='transparent',width=20)
+        self.add_water_button = customtkinter.CTkButton(self.waterr_frame,image=self.plus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_water_glass(delta=-1))
+        self.minus_water_button = customtkinter.CTkButton(self.waterr_frame,image=self.minus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_water_glass(delta=1))
         self.waterr_meter.pack(padx=45,pady=20)
         self.add_water_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
         self.minus_water_button.place(relx=0, rely=0.5, anchor='w')
@@ -332,6 +352,38 @@ class Dashboard(customtkinter.CTk):
     def frame_3_button_event(self):
         self.select_frame_by_name("frame_3")
 
+    def adjust_water_glass(self, delta):
+        if delta < 0:  
+            self.waterr_meter.step(delta=-1)
+            self.water_consumed += 1
+        else: 
+            self.waterr_meter.step(delta=1)
+            self.water_consumed -= 1
+
+        self.waterr_label.configure(text=f"{self.water_consumed} of 10")
+        update_water_consumed("AtharvaYadav",parsed_date,self.water_consumed)
+
+    def adjust_weight_meter(self, delta):
+        if delta < 0:  
+            self.target_wt_meter.step(delta=-1)
+            self.wt_lost += 1
+        else: 
+            self.target_wt_meter.step(delta=1)
+            self.wt_lost -= 1
+
+        self.target_wt_label.configure(text=f"{self.wt_lost} of {self.max_wt_lost}")
+
+    def adjust_sleep_hours(self,delta):
+        if delta < 0:  
+            self.sleep_meter.step(delta=-1)
+            self.hours_slept += 1
+        else: 
+            self.sleep_meter.step(delta=0.5)
+            self.hours_slept -= 1
+
+        self.sleep_label2.configure(text=f"{self.hours_slept} of 7")
+        update_sleep_hours("AtharvaYadav",parsed_date,self.hours_slept)
+
     def open_daily_meals(self):
         self.destroy()  
         track_meals.Track_meals().mainloop()
@@ -352,8 +404,6 @@ class Dashboard(customtkinter.CTk):
         self.minus_wt_button.place(relx=0, rely=0.5, anchor='w')
         self.target_wt_label.pack()
         self.target_wt_label2.pack()
-
-
 
     def change_appearance_mode_event(self, new_appearance_mode):
         self.appearance_mode = new_appearance_mode

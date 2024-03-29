@@ -1,4 +1,6 @@
 from Database.db_connection import connection
+from datetime import datetime
+import pprint
 
 def add_meal(meal):
        try:
@@ -32,4 +34,35 @@ def show_meals(username,meal_date,meal_type):
          
      except Exception as e:
             print("Error occured while adding meal" , e)
-    
+
+def get_nutrition_consumed(username,date):
+     try:
+         db = connection()
+         meals_collection = db["meals"]
+         today_meals = meals_collection.find({'username': username,'date':date})
+         total_calories = 0
+         total_protein = 0
+         total_fats = 0
+         total_carbs = 0
+         total_fiber = 0
+         for meal in today_meals:
+              total_calories += meal['Total_Calories']
+              total_protein += meal['protein']
+              total_fats += meal['fats']
+              total_carbs+= meal['carbohydrates']
+              total_fiber += meal['fiber']
+          
+         return {
+            'Total_Calories': round(total_calories),
+            'Total_Protein': round(total_protein),
+            'Total_Fats': round(total_fats),
+            'Total_Carbohydrates': round(total_carbs),
+            'Total_Fiber': round(total_fiber)
+        }
+              
+              
+            
+     except Exception as e:
+            print("Error occured while adding meal" , e)
+
+

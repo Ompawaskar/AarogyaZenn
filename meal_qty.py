@@ -66,7 +66,7 @@ class add_meals2(customtkinter.CTk):
         self.bottom_frame.columnconfigure((0,1,2,3),weight=1)
         self.bottom_frame.rowconfigure((0,1,2),weight=1)
        
-        self.macro_label = customtkinter.CTkLabel(self.bottom_frame,text="Macronutrients Breakdown(Per Unit)")
+        self.macro_label = customtkinter.CTkLabel(self.bottom_frame,text="Macronutrients Breakdown")
         self.macro_label.grid(row=0,column=0,sticky = "w",padx = 8,pady=8,columnspan = 4)
 
         self.protien_frame = customtkinter.CTkFrame(self.bottom_frame,fg_color='white')

@@ -21,8 +21,8 @@ def display_image_from_url(item,url, window, width=None, height=None):
     """Displays the image from the URL directly in the CustomTkinter window."""
   
         
-    image = ctk.CTkImage(light_image=Image.open("./yimages/"+str(no)+".png"),
-                                  dark_image=Image.open("./yimages/"+str(no)+".png"),
+    image = ctk.CTkImage(light_image=Image.open("./yimages/"+str(item['id'])+".png"),
+                                  dark_image=Image.open("./yimages/"+str(item['id'])+".png"),
                                   size=(280,280))
      
     image_label = CTkButton(window, image=image,text="",corner_radius=15,hover=False,fg_color="#ffefd6",command=lambda item=item: seedetails(item),height=350,width=320)

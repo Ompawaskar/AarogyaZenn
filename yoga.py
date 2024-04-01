@@ -29,20 +29,27 @@ def display_image_from_url(item,url, window, width=None, height=None):
         
     return image_label
 
-def create_data_frame(item,row_index, column_index,no):
-    frame = ctk.CTkFrame(master=f1,width=500,height=500,fg_color="transparent")
-    frame.grid(row=row_index, column=column_index,padx =40,pady=20)
+class YogaScrollableFrame(ctk.CTkScrollableFrame):
+    def __init__(self, master, width, height, fg_color="#cec5f0"):
+        super().__init__(master=master, width=width, height=height, fg_color=fg_color)
+        self.frames = []  # Store data frames for later access
 
-    image = display_image_from_url(item,no, frame, width=350, height=350)
-    image.pack()
-    ltext = update_label_text(item["sanskrit_name_adapted"])
-    l2 = ctk.CTkLabel(master=image, text=ltext,font=("TkFixedFont", 22),text_color="#111111",bg_color="transparent")  
-    l2.place(x= 25,y=280)
-    l3 = ctk.CTkLabel(master=image, text=item["english_name"],font=("TkFixedFont", 19),text_color="#444444",bg_color="transparent")  
-    l3.place(x= 30,y=310)
+    def create_data_frame(self, item, row_index, column_index):
+        frame = CTkFrame(master=self, width=500, height=500, fg_color="transparent")
+        frame.grid(row=row_index, column=column_index, padx=40, pady=20)
+
+        image = display_image_from_url(item, no, frame, width=350, height=350)
+        image.pack()
+        ltext = update_label_text(item["sanskrit_name_adapted"])
+        l2 = ctk.CTkLabel(master=frame, text=ltext, font=("TkFixedFont", 22), text_color="#111111", bg_color="transparent")
+        l2.pack()
+        l3 = ctk.CTkLabel(master=frame, text=item["english_name"], font=("TkFixedFont", 19), text_color="#444444", bg_color="transparent")
+        l3.pack()
+
+        self.frames.append(frame)  # Store the frame for later access
+        return frame
 
 
-    return frame
 
 
 def seedetails(item):
@@ -121,7 +128,7 @@ root.geometry('1200x700')
 root.title('Arogya Zenn')
 root.configure(bg='#333333')
 
-f1 = ctk.CTkScrollableFrame(master=root,width=1200,height=700,fg_color="#cec5f0")
+f1 = YogaScrollableFrame(master=root, width=1200, height=700)
 f1.pack()
 
 root.grid_columnconfigure(0, weight=1)  # Allow columns to expand equally
@@ -133,7 +140,7 @@ column_counter = 0
 no = 1
 for item in yogadata.data:
    
-    data_frame = create_data_frame(item, row_counter, column_counter,no)
+    data_frame = f1.create_data_frame(item, row_counter, column_counter,)
     column_counter += 1
     if column_counter == 3:  # Reset column counter after 4 columns
         column_counter = 0

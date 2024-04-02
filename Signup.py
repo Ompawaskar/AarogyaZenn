@@ -3,6 +3,7 @@ import tkinter as tk
 from customtkinter import *
 from PIL import ImageTk, Image
 from DB import connection
+# from Database.Calculations import calculate_daily_calories
 from DBfuntions import add_user
 import bcrypt
 from tkinter import messagebox
@@ -14,6 +15,8 @@ def showpass():
         password_txt.configure(show="")
     else:
         password_txt.configure(show="*")
+
+
 
 def credentials_pass_to_db():
     # Fetch username from the entry widget

@@ -73,6 +73,7 @@ class add_meals(customtkinter.CTk):
     def open_meal_qty(self):
         meal_name = self.input_field.get()
         user_meal['meal_name'] = meal_name
+        print(user_meal)
         nutritional_json = nutritional_info(meal_name)
         self.destroy()
         meal_qty.add_meals2(nutritional_json).mainloop()

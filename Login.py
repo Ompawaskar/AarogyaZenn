@@ -1,11 +1,10 @@
 import customtkinter as ctk
 from customtkinter import *
 from PIL import ImageTk, Image
-from DB import connection
 import customtkinter as ctk
 from customtkinter import *
 from PIL import ImageTk, Image
-from DB import connection
+from Database.db_connection import connection
 from tkinter import messagebox
 from DBfuntions import add_user
 import subprocess
@@ -53,7 +52,6 @@ def authenticate(username, password):
 def submit():
     username = username_txt.get()
     password = password_txt.get()
-    
     authenticate(username, password)
 
 

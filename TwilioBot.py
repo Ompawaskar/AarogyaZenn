@@ -1,6 +1,7 @@
 from flask import Flask, request
 from twilio.twiml.messaging_response import MessagingResponse
 from pymongo import MongoClient
+from Nutrition.Nutritionapi_connection import nutritional_info
 
 connection_string ='mongodb+srv://ompawaskar:ruchita@cluster0.lsshopg.mongodb.net/'
 client = MongoClient(connection_string, tlsAllowInvalidCertificates=True)
@@ -67,9 +68,12 @@ def sms_reply():
 
     elif state == 'WAITING_DISH_NAME':
         dish_name = incoming_message
+
         username = session_state['username']
         meal_category = session_state['meal_category']
-        # Store user input (username, meal category, dish name) in MongoDB or array
+        calorie_count = nutritional_info(dish_name)
+        print(calorie_count)
+        # Store user input (username, meal catecalorie_count = gory, dish name) in MongoDB or array
         store_user_input(username, meal_category, dish_name)
         response = "Thank you for providing the information. Your dish has been added!"
         # Reset session state

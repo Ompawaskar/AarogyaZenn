@@ -1,4 +1,4 @@
-from db_connection import connection
+from Database.db_connection import connection
 
 try:
     db = connection()
@@ -53,11 +53,11 @@ def calculate_minimum_calories_burned(user):
 
 
     # Extract user information from the dictionary
-    weight = user.get("weight")
-    height = user.get("height")
-    gender = user.get("gender")
+    weight = float(user.get("weight"))
+    height = float(user.get("height"))
+    gender = float(user.get("gender"))
     activity_level = user.get("activity_level")
-    age = user.get("age")
+    age = float(user.get("age"))
 
     if gender.lower() == 'male':
         bmr_constant = 88.362
@@ -74,13 +74,13 @@ def calculate_minimum_calories_burned(user):
 
     bmr = bmr_constant + (weight_constant * weight) + (height_constant * height) - (age_constant * age)
 
-    if activity_level.lower() == 'sedentary':
+    if activity_level.lower() == 'Little or No Activity':
         activity_factor = 1.2
-    elif activity_level.lower() == 'lightly active':
+    elif activity_level.lower() == 'Lightly Active"':
         activity_factor = 1.375
-    elif activity_level.lower() == 'moderately active':
+    elif activity_level.lower() == 'Moderately Active':
         activity_factor = 1.55
-    elif activity_level.lower() == 'very active':
+    elif activity_level.lower() == 'Very Active':
         activity_factor = 1.725
     elif activity_level.lower() == 'extra active':
         activity_factor = 1.9

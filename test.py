@@ -3,8 +3,7 @@ import customtkinter as ctk
 from PIL import ImageTk, Image
 import bcrypt
 import os
-
-
+# from Database.Calculations import calculate_daily_calories
 import fontawesome as fa
 from datetime import datetime
 from DBfuntions import add_user
@@ -27,6 +26,46 @@ bg_label = ctk.CTkLabel(information, text="", corner_radius=5, image=loginbg)
 bg_label.place(x=0, y=0)
 information.resizable(False, False)
 
+def calculate_daily_calories(user):
+    # Extract user information from the dictionary
+    weight = float(user.get("weight"))
+    height = float(user.get("height"))
+    gender = user.get("gender")
+    activity_level = user.get("activity_level")
+    age = float(user.get("age"))
+
+    # Define Harris-Benedict constants based on gender
+    if gender.lower() == 'male':
+        bmr_constant = 88.362
+        height_constant = 4.799
+        weight_constant = 13.397
+        age_constant = 5.677
+    elif gender.lower() == 'female':
+        bmr_constant = 447.593
+        height_constant = 3.098
+        weight_constant = 9.247
+        age_constant = 4.330
+    else:
+        raise ValueError("Invalid gender. Must be 'male' or 'female'.")
+
+    # Calculate Basal Metabolic Rate (BMR)
+    bmr = bmr_constant + (weight_constant * weight) + (height_constant * height) - (age_constant * age)
+
+    # Adjust BMR based on activity level
+    if activity_level.lower() == 'sedentary':
+        calories = bmr * 1.2
+    elif activity_level.lower() == 'lightly active':
+        calories = bmr * 1.375
+    elif activity_level.lower() == 'moderately active':
+        calories = bmr * 1.55
+    elif activity_level.lower() == 'very active':
+        calories = bmr * 1.725
+    elif activity_level.lower() == 'extra active':
+        calories = bmr * 1.9
+    else:
+        raise ValueError("Invalid activity level. Must be 'sedentary', 'lightly active', 'moderately active', 'very active', or 'extra active'.")
+
+    return calories
 def credentials_pass_to_db():
     username=name.get()
     user_gender=gender
@@ -37,13 +76,18 @@ def credentials_pass_to_db():
     user_tar_weight=tar_weight.get()
     user_goal=goal
     user_conditions=selected_conditions
-
-    insert_data(username,user_gender,user_conditions,user_activity,user_age,user_goal,user_height,user_weight,user_tar_weight)
+    daily_calorie_goal = calculate_daily_calories({'weight': user_weight,
+                              'height':user_height,
+                              'age':user_age,
+                              'activity_level':activity_status,
+                              'gender':user_gender})
+    
+    insert_data(username,user_gender,user_conditions,user_activity,user_age,user_goal,user_height,user_weight,user_tar_weight,daily_calorie_goal)
     information.destroy()          
     os.system('python Login.py')
 
     
-def insert_data(username,user_gender,user_conditions,user_activity,user_age,user_goal,user_height,user_weight,user_tar_weight):
+def insert_data(username,user_gender,user_conditions,user_activity,user_age,user_goal,user_height,user_weight,user_tar_weight,daily_calorie_goal):
     user_information={
        "information":{
         "gender":user_gender,
@@ -53,8 +97,8 @@ def insert_data(username,user_gender,user_conditions,user_activity,user_age,user
         "weight":user_weight,
         "tar_weight":user_tar_weight,
         "goal":user_goal,
-        "conditions":user_conditions
-
+        "conditions":user_conditions,
+        "daily_calories": daily_calorie_goal
        }  
     }
     result=info_data_check(user_information,username)
@@ -81,11 +125,6 @@ def update_goal(value):
 #     global current_user
 #     current_user = value     
    
-
-
-
-
-
 #add_meal(meal_example)
 
 # username=current_username()

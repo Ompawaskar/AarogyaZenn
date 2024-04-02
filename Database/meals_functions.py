@@ -65,4 +65,15 @@ def get_nutrition_consumed(username,date):
      except Exception as e:
             print("Error occured while getting meal" , e)
 
+def get_total_calories(username):
+     try:
+         db = connection()
+         user_collection = db["Users@aarogyazen"]
+         user = user_collection.find_one({'username':username})
+         total_cals = user['information'][0]['daily_calories']
+         print(total_cals)
+         return total_cals
+     
+     except Exception as e:
+            print("Error occured while getting total calories" , e) 
 

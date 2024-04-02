@@ -85,4 +85,4 @@ def update_sleep_hours(username,date,hours_sleep):
      except Exception as e:
             print("Error occured while updating hours sleep" , e)
 
-# update_water_consumed("AtharvaYadav",parsed_date,7) 
+

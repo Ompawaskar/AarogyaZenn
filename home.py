@@ -6,20 +6,23 @@ from PIL import Image
 from Circular_meter import Meter
 from tkinter import PhotoImage
 import track_meals
-from Database.meals_functions import get_nutrition_consumed
+from Database.meals_functions import get_nutrition_consumed,get_total_calories
 from Database.user_activity_functions import get_water_consumed , update_water_consumed,get_hours_slept,update_sleep_hours
 from Watch.steps_walked import get_user_activity
 from datetime import datetime
-# from globalStore import current_user
-# # from Workout_page_changes import run_workout_page
-# # from final_workout import run_workout_page
+from globalStore import current_user,user_meal
 import progress_report
-# from yoga import YogaScrollableFrame
-# from Workout_page_changes import ExerciseImageLoader
 
 
 date_string = "2024-03-29"
-parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
+# Get today's date
+today_date = datetime.today()
+
+# Format today's date as a string in "YYYY-MM-DD" format
+today_date_string = today_date.strftime("%Y-%m-%d")
+
+# Parse the formatted date string back to a datetime object
+parsed_date = datetime.strptime(today_date_string, "%Y-%m-%d")
 
 class Dashboard(customtkinter.CTk):
 
@@ -34,13 +37,13 @@ class Dashboard(customtkinter.CTk):
         self.geometry(str(Dashboard.WIDTH) + "x" + str(Dashboard.HEIGHT))
         self.minsize(Dashboard.WIDTH, Dashboard.HEIGHT)
         self.appearance_mode = "Light"
-        # print(current_user['username'])
+        self.user = current_user['username']
+        print(current_user['username'])
         # self.today_date = datetime.today().date()
-        self.today_nutrition_values = get_nutrition_consumed("AtharvaYadav",parsed_date)
-
-        self.totalCalories = 3000
+        self.today_nutrition_values = get_nutrition_consumed(self.user,parsed_date)
+        # self.totalCalories = 3000
+        self.totalCalories = get_total_calories(self.user)
         self.CaloriesUsed = self.today_nutrition_values["Total_Calories"]
-
         self.protiens_target = 300
         self.protiens_consumed = self.today_nutrition_values["Total_Protein"]
         self.protiens_percent = self.protiens_consumed/self.protiens_target
@@ -68,11 +71,7 @@ class Dashboard(customtkinter.CTk):
         self.steps_walked = get_user_activity(parsed_date)['steps']
         self.hours_slept = get_hours_slept("AtharvaYadav",parsed_date)
         
-        
-
         # self.resizable(False, False)
-
-
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -381,6 +380,7 @@ class Dashboard(customtkinter.CTk):
         update_sleep_hours("AtharvaYadav",parsed_date,self.hours_slept)
 
     def open_daily_meals(self):
+        user_meal['username'] = current_user['username']
         self.destroy()  
         track_meals.Track_meals().mainloop()
         

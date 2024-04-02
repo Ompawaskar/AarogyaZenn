@@ -25,7 +25,7 @@ meal_example = {
 schema_validation = {
     "$jsonSchema": {
         "bsonType": "object",
-        "required": ["Total_Calories", "protein", "fats", "fiber", "carbohydrates", "username", "meal_type", "meal_name", "units", "quantity", "date"],
+        "required": [],
         "properties": {
             "Total_Calories": {
                 "bsonType": "double",

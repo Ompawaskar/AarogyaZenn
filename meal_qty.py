@@ -9,8 +9,13 @@ from Nutrition.Nutritionapi_connection import nutritional_info
 from Database.meals_functions import add_meal
 from datetime import datetime
 
-date_string = "2024-03-29"
-parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
+today_date = datetime.today()
+
+# Format today's date as a string in "YYYY-MM-DD" format
+today_date_string = today_date.strftime("%Y-%m-%d")
+
+# Parse the formatted date string back to a datetime object
+parsed_date = datetime.strptime(today_date_string, "%Y-%m-%d")
 
 class add_meals2(customtkinter.CTk):
     APP_NAME = "Add Meals"

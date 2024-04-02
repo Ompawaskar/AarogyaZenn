@@ -277,7 +277,7 @@ class Meter(Frame):
         if self.amountused >= self.amounttotal:
             self.towardsmaximum = True
             self.amountused = self.amountused - delta
-        elif self.amountused <= 0:
+        elif self.amountused < 0:
             self.towardsmaximum = False
             self.amountused = self.amountused + delta
         elif self.towardsmaximum:

@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 import os
 import add_meals
 import globalStore
+from Database.meals_functions import get_specific_meal
 
 
 class Track_meals(customtkinter.CTk):
@@ -179,6 +180,8 @@ class Track_meals(customtkinter.CTk):
         self.destroy()
         add_meals.add_meals().mainloop()
         print(globalStore.user_meal)
+
+    
         
 
 

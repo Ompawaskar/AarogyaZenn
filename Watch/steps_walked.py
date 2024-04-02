@@ -7,19 +7,23 @@ from datetime import datetime
 import pprint
 
 date_string = "2024-03-29"
-parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
+# Get today's date
+today_date = datetime.today()
 
-def get_user_activity(date):
+# Format today's date as a string in "YYYY-MM-DD" format
+today_date_string = today_date.strftime("%Y-%m-%d")
+
+def get_user_activity(date,user):
     load_dotenv()
+    # print(f"Date:{date}")
 
     # Your access token
     ACCESS_TOKEN = os.getenv('FITBIT_ACCESS_TOKEN')
 
     # Date for which you want to retrieve activity data (in YYYY-MM-DD format)
-    date = '2024-02-27'
 
     # Fitbit API endpoint to retrieve activity data
-    url = f"https://api.fitbit.com/1/user/-/activities/date/{date}.json"
+    url = f"https://api.fitbit.com/1/user/-/activities/date/{today_date_string}.json"
 
     # Header containing the authorization token
     headers = {
@@ -38,8 +42,8 @@ def get_user_activity(date):
             # Extracting the total calories burned for the specified date
             steps_walked = steps_data['summary']['steps']
             calories_burned = float(steps_data['summary']['caloriesOut'])
-            update_steps_walked("AtharvaYadav",parsed_date,steps_walked)
-            update_calories_burned("AtharvaYadav",parsed_date,calories_burned)
+            # update_steps_walked("AtharvaYadav",today_date_string,steps_walked)
+            # update_calories_burned("AtharvaYadav",today_date_string,calories_burned)
             # print(f"Steps walked on {date}: {steps_walked}")
             return {"steps":steps_walked,
                     "cals":calories_burned}
@@ -49,3 +53,5 @@ def get_user_activity(date):
 
     except Exception as e:
         print(f"Error: {str(e)}")
+
+# get_user_activity(parsed_date)

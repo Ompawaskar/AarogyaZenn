@@ -151,7 +151,7 @@ class add_meals2(customtkinter.CTk):
         carbs = round(factor * self.nutritional_info['foods'][0]['nf_total_carbohydrate'], 2)
         fats = round(factor * self.nutritional_info['foods'][0]['nf_total_fat'], 2)
         fiber = round(factor * self.nutritional_info['foods'][0]['nf_dietary_fiber'], 2)
-
+        
         globalStore.user_meal['Total_Calories'] = calories
         globalStore.user_meal['protein'] = protein
         globalStore.user_meal['carbohydrates'] = carbs

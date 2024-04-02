@@ -11,8 +11,6 @@ import urllib3
 from concurrent.futures import Executor, ThreadPoolExecutor
 from custom_wkt import CustomWorkoutPage
 
-
-
 class ExerciseImageLoader:
     def __init__(self):
         self.image_cache = {}

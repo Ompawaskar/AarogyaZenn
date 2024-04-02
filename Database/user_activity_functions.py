@@ -1,10 +1,32 @@
 from Database.db_connection import connection
-from datetime import datetime
+from datetime import datetime,timedelta
 import pprint
 
 date_string = "2024-03-29"
 parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
 
+def create_activity(username,date):
+     try:
+         db = connection()
+         activity_collection = db["user_activity"]
+         user_document = activity_collection.find_one({'username':username,
+                                       'date':date})
+         print(user_document)
+         if user_document:
+              pass
+         else:
+              activity_collection.insert_one({
+                        "username" : username,
+                        "Cals_burned": 0.0,
+                        "water_drank": 0,
+                        "steps_walked": 0,
+                        "hours_slept": 0.0,
+                        "date": date
+                        })
+              print("Created Succesfully!")
+     except Exception as e:
+            print("Error occured while getting water consumed" , e)
+     
 def get_water_consumed(username,date):
      try:
          db = connection()
@@ -84,5 +106,33 @@ def update_sleep_hours(username,date,hours_sleep):
                {"$set": {'hours_slept': hours_sleep}})
      except Exception as e:
             print("Error occured while updating hours sleep" , e)
+
+def get_water_intake_last_7_days(username):
+    try:
+        db = connection()
+        user_activity_collection = db["user_activity"]
+        
+        # Calculate the date 7 days ago
+        today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        seven_days_ago = today - timedelta(days=6)
+        
+        # Initialize a list with 7 elements initialized to 0
+        water_intake = [0] * 7
+        
+        # Query documents for the past 7 days
+        cursor = user_activity_collection.find({
+            "username": username,
+            "date": {"$gte": seven_days_ago, "$lte": today}
+        })
+
+        # Update water intake values from documents
+        for document in cursor:
+            # Calculate the index corresponding to the document's date
+            index = (document['date'] - seven_days_ago).days
+            water_intake[index] = document.get('water_drank', 0)  # Get water_drank or default to 0 if not present
+        
+        return water_intake
+    except Exception as e:
+        print("Error occurred while fetching water intake:", e)
 
 

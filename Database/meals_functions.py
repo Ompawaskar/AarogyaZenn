@@ -77,3 +77,27 @@ def get_total_calories(username):
      except Exception as e:
             print("Error occured while getting total calories" , e) 
 
+def get_specific_meal(username,date,meal):
+     try:
+         db = connection()
+         meals_collection = db["meals"]
+         cursor = meals_collection.find({"username": username,
+                                         "date":date,
+                                         "meal_type":meal})
+         
+         meals_info = []  # Initialize an empty list to store meals info
+        
+        # Loop through the cursor
+         for document in cursor:
+               meal_info = {
+                    "meal_name": document['meal_name'],
+                    "Total_Calories": document['Total_Calories'],
+                    "unit": document['unit'],
+                    "quantity": document['quantity']
+               }
+               meals_info.append(meal_info)  # Append meal info for each document
+          
+         return meals_info
+         
+     except Exception as e:
+            print("Error occured while showing meal" , e)

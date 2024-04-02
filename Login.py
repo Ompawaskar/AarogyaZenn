@@ -14,6 +14,16 @@ import bcrypt
 # sys.path.append('..') 
 import final_main
 from globalStore import current_user
+from Database.user_activity_functions import create_activity
+from datetime import datetime
+
+today_date = datetime.today()
+
+# Format today's date as a string in "YYYY-MM-DD" format
+today_date_string = today_date.strftime("%Y-%m-%d")
+
+# Parse the formatted date string back to a datetime object
+parsed_date = datetime.strptime(today_date_string, "%Y-%m-%d")
 
 
 login = CTk()
@@ -22,10 +32,7 @@ login.geometry("1300x700")
 loginbg = ctk.CTkImage(Image.open("image2.png"), size=(1300, 700))
 bg_label = ctk.CTkLabel(login, text="", corner_radius=5, image=loginbg)
 bg_label.place(x=0, y=0)
-login.resizable(False, False)
-
-
-
+# login.resizable(False, False)
 
 def authenticate(username, password):
     # Search for the user in the collection
@@ -42,7 +49,7 @@ def authenticate(username, password):
         # Check if the hashed password matches the stored hashed password
         if hashed_password == user['hashed_password']:
             messagebox.showinfo("Success","Authentication successful")
-           
+            create_activity(username,parsed_date)
             login.destroy()
             final_main.main()
             return True
@@ -50,12 +57,11 @@ def authenticate(username, password):
     return False
 
 def submit():
+    print("Submitted")
     username = username_txt.get()
     password = password_txt.get()
     authenticate(username, password)
-
-
-
+    
 
 
 username_txt = ctk.CTkEntry(login, border_width=1.5,
@@ -69,7 +75,6 @@ password_txt = ctk.CTkEntry(login, border_width=1.5, border_color="#94a8fe",
                             placeholder_text="Password", width=315, height=48, corner_radius=30,
                             bg_color="#ffffff", show='*')
 password_txt.place(x=135, y=315)
-
 
 
 nextbtn = ctk.CTkButton(login, border_width=1.5, border_color="#94a8fe", text="Login", width=100, height=30, corner_radius=30, bg_color="#ffffff", command=submit)

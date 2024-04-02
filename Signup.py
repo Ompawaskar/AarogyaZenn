@@ -119,7 +119,7 @@ signup.geometry("1300x700")
 loginbg = ctk.CTkImage(Image.open("image.png"), size=(1300, 700))
 bg_label = ctk.CTkLabel(signup, text="", corner_radius=5, image=loginbg)
 bg_label.place(x=0, y=0)
-signup.resizable(False, False)
+# signup.resizable(False, False)
 
 email_txt = ctk.CTkEntry(signup, border_width=1.5, border_color="#94a8fe",
                          placeholder_text="Email", width=315, height=48, corner_radius=30,

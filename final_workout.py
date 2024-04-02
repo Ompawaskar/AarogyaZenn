@@ -7,7 +7,6 @@ import custom_wkt
 import threading
 import urllib3
 
-
 def run_workout_page():
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

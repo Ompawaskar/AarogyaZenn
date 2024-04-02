@@ -87,7 +87,7 @@ def create_collection():
 # create_collection()
         
 #Example user
-add_meal(meal_example)
+# add_meal(meal_example)
 
 
 

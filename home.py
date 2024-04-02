@@ -10,9 +10,10 @@ from Database.meals_functions import get_nutrition_consumed
 from Database.user_activity_functions import get_water_consumed , update_water_consumed,get_hours_slept,update_sleep_hours
 from Watch.steps_walked import get_user_activity
 from datetime import datetime
-from globalStore import current_user
-# from Workout_page_changes import run_workout_page
-from final_workout import run_workout_page
+# from globalStore import current_user
+# # from Workout_page_changes import run_workout_page
+# # from final_workout import run_workout_page
+import progress_report
 # from yoga import YogaScrollableFrame
 # from Workout_page_changes import ExerciseImageLoader
 
@@ -115,10 +116,10 @@ class Dashboard(customtkinter.CTk):
                                                                 command=self.change_appearance_mode_event)
         self.appearance_mode_menu.grid(row=6, column=0, padx=20, pady=20, sticky="s")
 
-        self.frame_4_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="workout",
-                                                    fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
-                                                    image=self.add_user_image, anchor="w",  command=self.open_workout_page)
-        self.frame_4_button.grid(row=3, column=0, sticky="ew")
+        # self.frame_4_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="workout",
+        #                                             fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
+        #                                             image=self.add_user_image, anchor="w",  command=self.open_workout_page)
+        # self.frame_4_button.grid(row=3, column=0, sticky="ew")
 
 
 
@@ -306,16 +307,17 @@ class Dashboard(customtkinter.CTk):
         self.waterr_label2.pack()
             
         # create second frame
-        self.second_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.second_frame = progress_report.Progress(self)
         
         # create third frame
         self.third_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        # self.second_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
 
         # select default frame
         self.select_frame_by_name("home")
 
-    def open_workout_page(self):
-                run_workout_page()
+    # def open_workout_page(self):
+    #             run_workout_page()
 
     def select_frame_by_name(self, name):
         # set button color for selected button

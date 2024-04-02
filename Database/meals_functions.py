@@ -33,7 +33,7 @@ def show_meals(username,meal_date,meal_type):
                                          "meal_type":meal_type})
          
      except Exception as e:
-            print("Error occured while adding meal" , e)
+            print("Error occured while showing meal" , e)
 
 def get_nutrition_consumed(username,date):
      try:
@@ -63,6 +63,6 @@ def get_nutrition_consumed(username,date):
               
             
      except Exception as e:
-            print("Error occured while adding meal" , e)
+            print("Error occured while getting meal" , e)
 
 

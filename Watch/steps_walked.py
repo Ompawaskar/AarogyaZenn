@@ -37,7 +37,7 @@ def get_user_activity(date):
             # print(steps_data)
             # Extracting the total calories burned for the specified date
             steps_walked = steps_data['summary']['steps']
-            calories_burned = steps_data['summary']['caloriesOut']
+            calories_burned = float(steps_data['summary']['caloriesOut'])
             update_steps_walked("AtharvaYadav",parsed_date,steps_walked)
             update_calories_burned("AtharvaYadav",parsed_date,calories_burned)
             # print(f"Steps walked on {date}: {steps_walked}")

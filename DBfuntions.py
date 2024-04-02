@@ -20,8 +20,6 @@ def add_user(user):
     except Exception as e:
         print("Error occurred while adding user:", e)
 
-
-
 def add_info(user_information,username):
     
     db = connection()
@@ -37,7 +35,6 @@ def add_info(user_information,username):
            print("Additional information added successfully!")
     else:
             print("Failed to add additional information.")
-
 
 def info_data_check(user_information,username):
         db = connection()

@@ -176,7 +176,7 @@ class add_meals2(customtkinter.CTk):
         globalStore.user_meal['quantity'] = quantity_float
         globalStore.user_meal['unit'] = unit
         globalStore.user_meal['date'] = parsed_date
-        print(globalStore.user_meal)
+        # print(globalStore.user_meal)
         add_meal(globalStore.user_meal)
         self.destroy()
         home.Dashboard().mainloop()

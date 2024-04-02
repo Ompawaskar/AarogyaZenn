@@ -13,7 +13,7 @@ def get_water_consumed(username,date):
                                        'date':date})
          return water_consumed_document['water_drank']
      except Exception as e:
-            print("Error occured while adding meal" , e) 
+            print("Error occured while getting water consumed" , e) 
 
 def update_water_consumed(username,date,water_consumed):
     try:
@@ -23,7 +23,7 @@ def update_water_consumed(username,date,water_consumed):
                {'username':username,'date':date},
                {"$set": {'water_drank': water_consumed}})
     except Exception as e:
-            print("Error occured while adding meal" , e)
+            print("Error occured while updating water consumed" , e)
 
 def get_calories_burned(username,date):
     try:
@@ -43,7 +43,7 @@ def update_calories_burned(username,date,Cals_burned):
                {'username':username,'date':date},
                {"$set": {'Cals_burned': Cals_burned}})
       except Exception as e:
-            print("Error occured while adding meal" , e)
+            print("Error occured while updating cals" , e)
 
 def get_steps_walked(username,date):
       try:
@@ -63,7 +63,7 @@ def update_steps_walked(username,date,steps_walked):
                {'username':username,'date':date},
                {"$set": {'steps_walked': steps_walked}})
      except Exception as e:
-            print("Error occured while adding meal" , e)
+            print("Error occured while updating steps" , e)
       
 def get_hours_slept(username,date):
       try:
@@ -73,7 +73,7 @@ def get_hours_slept(username,date):
                                        'date':date})
          return hours_slept_document['hours_slept']
       except Exception as e:
-            print("Error occured while getting calories" , e)
+            print("Error occured while getting hours sleep" , e)
 
 def update_sleep_hours(username,date,hours_sleep):
      try:
@@ -83,6 +83,6 @@ def update_sleep_hours(username,date,hours_sleep):
                {'username':username,'date':date},
                {"$set": {'hours_slept': hours_sleep}})
      except Exception as e:
-            print("Error occured while adding meal" , e)
+            print("Error occured while updating hours sleep" , e)
 
 # update_water_consumed("AtharvaYadav",parsed_date,7) 

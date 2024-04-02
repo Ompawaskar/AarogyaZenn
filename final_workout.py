@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import requests
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw
 import io
 import json
 from Exercises_api import fetch_exercises
@@ -11,16 +11,26 @@ import urllib3
 from concurrent.futures import Executor, ThreadPoolExecutor
 from custom_wkt import CustomWorkoutPage
 
+
+
 class ExerciseImageLoader:
     def __init__(self):
         self.image_cache = {}
         self.executor = ThreadPoolExecutor(max_workers=10)
+        self.create_placeholder_image()
+
+    def create_placeholder_image(self):
+        
+        size = (100, 100)
+        self.placeholder_img = Image.new("RGB", size, "white")
+        draw = ImageDraw.Draw(self.placeholder_img)
+        draw.rectangle([0, 0, size[0]-1, size[1]-1], outline="black")
 
     def load_image(self, url, callback):
         if url in self.image_cache:
             callback(self.image_cache[url])
         else:
-              future = self.executor.submit(self._fetch_image, url, callback)  
+            future = self.executor.submit(self._fetch_image, url, callback)
 
     def _fetch_image(self, url, callback):
         try:
@@ -35,13 +45,13 @@ class ExerciseImageLoader:
                 print(f"Failed to fetch image from {url}. Status code: {response.status_code}")
         except Exception as e:
             print(f"Error fetching image from {url}: {e}")
-
+            callback(ImageTk.PhotoImage(self.placeholder_img))
 class ExerciseApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Workout")
         self.root.configure(bg="black") 
-
+        self.custom_workout_page = None
         self.exercise_loader = ExerciseImageLoader()
         self.exercises = []
        
@@ -58,7 +68,7 @@ class ExerciseApp:
         search_frame = tk.Frame(self.root, pady=20, bg="black")
         search_frame.pack(fill="x")
 
-       
+        
         search_label = tk.Label(search_frame, text="Search:", bg="black", fg="white")
         search_label.pack(side=tk.LEFT)
 
@@ -116,7 +126,7 @@ class ExerciseApp:
         custom_workout_label.pack(side=tk.LEFT, padx=5)
         custom_workout_label.bind("<Button-1>", lambda event: self.open_custom_workout_page())
 
-        
+       
         self.canvas = tk.Canvas(self.root, bg="black")
         self.canvas.pack(side=tk.LEFT, fill="both", expand=True)
 
@@ -130,13 +140,23 @@ class ExerciseApp:
 
         self.canvas.create_window((0, 0), window=self.inner_frame, anchor="nw")
 
-       
+        
         self.executor = ThreadPoolExecutor(max_workers=10)
         self.fetch_exercises()
         self.display_exercises(self.exercises)
         
        
         self.setup_scroll_event()
+
+    class YourClassName:
+        def __init__(self):
+     
+            self.search_entry = tk.Entry(...)
+            self.body_part_var = tk.StringVar(...)
+            self.target_var = tk.StringVar(...)
+            self.secondary_muscle_var = tk.StringVar(...)
+            self.equipment_var = tk.StringVar(...)
+            self.exercises = fetch_exercises() 
 
     def search(self):
         query = self.search_entry.get().lower() 
@@ -145,7 +165,7 @@ class ExerciseApp:
         secondary_muscle = self.secondary_muscle_var.get()
         equipment = self.equipment_var.get()
 
-       
+        
         filtered_exercises = [exercise for exercise in self.exercises if
                               (query in exercise['name'].lower()) and
                               (body_part == "All" or body_part.lower() == exercise['bodyPart'].lower()) and
@@ -153,7 +173,11 @@ class ExerciseApp:
                               (secondary_muscle == "All" or secondary_muscle.lower() in map(str.lower, exercise['secondaryMuscles'])) and
                               (equipment == "All" or equipment.lower() == exercise['equipment'].lower())]
 
-        self.display_exercises(filtered_exercises)
+        if filtered_exercises:
+            self.display_exercises(filtered_exercises)
+        else:
+            messagebox.showinfo("No Exercises", "No exercises match the selected filters.")
+
         
     def fetch_exercises(self, exercise_id=None,page_number=1, page_size=20):
         url = "https://exercisedb.p.rapidapi.com/exercises"
@@ -172,7 +196,7 @@ class ExerciseApp:
     def load_exercises(self):
         try:
             with open('exercises.json', 'r') as json_file:
-                return json.load(json_file)
+                return json.load(json_file)  
         except FileNotFoundError:
             return []
 
@@ -181,14 +205,14 @@ class ExerciseApp:
 
 
         app = ExerciseApp(root)
-        exercises = app.load_exercises() 
+        exercises = app.load_exercises()  
 
     
     def on_configure(self, event):
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
 
     def show_exercise_details(self, exercise):
-       
+        
         exercise_window = tk.Toplevel(self.root)
         exercise_window.title("Exercise Details")
         exercise_window.configure(bg="#E0E0E0")
@@ -202,7 +226,7 @@ class ExerciseApp:
                         f"Instructions:\n" \
                         f"{'; '.join(exercise.get('instructions'))}"
 
-       
+        
         details_label = tk.Label(exercise_window, text=detailed_info, bg="#E0E0E0", fg="#333333", font=("Helvetica", 12), wraplength=400)
         details_label.pack(pady=10, padx=10)
 
@@ -227,13 +251,13 @@ class ExerciseApp:
                     gif_label.image = photo
                     exercise_window.after(200, update_gif, (frame_num + 1) % img.n_frames)
 
-                
+               
                 update_gif()
             else:
                
                 messagebox.showerror("Error", "Failed to fetch GIF image.")
         else:
-            
+           
             messagebox.showinfo("Info", "No GIF image available for this exercise.")
 
     def display_exercises(self, exercises_to_display):
@@ -242,7 +266,7 @@ class ExerciseApp:
             widget.destroy()
 
         num_exercises = len(exercises_to_display)
-        num_columns = 5 
+        num_columns = 3
         num_rows = -(-num_exercises // num_columns)  
 
         for i, exercise in enumerate(exercises_to_display):
@@ -267,11 +291,21 @@ class ExerciseApp:
             else:
                 messagebox.showinfo("Info", "No GIF image available for this exercise.")
     
+    custom_workout_page = None  
+    
+    
+    def add_to_custom_workout(self, exercise):
+        if self.custom_workout_page is None:
+            self.custom_workout_page = custom_wkt.CustomWorkoutPage(self.root)
+
+        self.custom_workout_page.update_exercises_list([exercise])
+        messagebox.showinfo("Added", "Exercise added to Custom Workout.")
+
 
     def on_scroll(self, event):
         region = self.canvas.bbox("all")
         if region[3] == self.canvas.winfo_height():
-            
+           
             self.load_more_images()
 
     
@@ -279,13 +313,13 @@ class ExerciseApp:
         self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
         
     def load_more_images(self):
-    
-        additional_exercises = fetch_exercises()  
+  
+        additional_exercises = fetch_exercises() 
 
-   
+  
         self.exercises.extend(additional_exercises)
 
-
+   
         self.display_exercises(self.exercises)
 
 
@@ -293,18 +327,10 @@ class ExerciseApp:
         self.canvas.bind("<Configure>", self.on_configure)
         self.canvas.bind("<MouseWheel>", self.on_mousewheel)
 
-    def add_to_custom_workout(self, exercise):
-        global custom_workout_page  
     
-        if custom_workout_page is None:
-            custom_workout_page = custom_wkt.CustomWorkoutPage(self.root)
-
-        custom_workout_page.update_exercises_list([exercise])
-        messagebox.showinfo("Added", "Exercise added to Custom Workout.")
-
-
+    
     def open_custom_workout_page(self):
-        
+       
         if CustomWorkoutPage is None:
             CustomWorkoutPage = custom_wkt.CustomWorkoutPage(self.root)
 

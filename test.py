@@ -3,6 +3,8 @@ import customtkinter as ctk
 from PIL import ImageTk, Image
 import bcrypt
 import os
+
+
 import fontawesome as fa
 from datetime import datetime
 from DBfuntions import add_user
@@ -10,15 +12,11 @@ import sys
 from DBfuntions import add_info 
 from DBfuntions import info_data_check
 from DB import connection
-import Login
-
-# from globalStore import current_user
 
 
 
 # from Login import current_username
 
-# print(f"username:{current_user['username']}")
 information = ctk.CTk()
 information.title("Login Page")
 information.geometry("1300x700")
@@ -30,7 +28,7 @@ bg_label.place(x=0, y=0)
 information.resizable(False, False)
 
 def credentials_pass_to_db():
-    username= name.get()
+    username=name.get()
     user_gender=gender
     user_age=age.get()
     user_activity=activity_status
@@ -41,9 +39,10 @@ def credentials_pass_to_db():
     user_conditions=selected_conditions
 
     insert_data(username,user_gender,user_conditions,user_activity,user_age,user_goal,user_height,user_weight,user_tar_weight)
-    information.destroy()
-    Login.main()
+    information.destroy()          
+    os.system('python Login.py')
 
+    
 def insert_data(username,user_gender,user_conditions,user_activity,user_age,user_goal,user_height,user_weight,user_tar_weight):
     user_information={
        "information":{
@@ -65,8 +64,8 @@ def insert_data(username,user_gender,user_conditions,user_activity,user_age,user
             add_info(user_information,username)
             
     
-# def current_u():
-#     return name.get()
+def current_u():
+    return name.get()
 def update_gender(value):
     global gender
     gender = value 
@@ -129,10 +128,9 @@ def prev(tno):
 # l1.place(x=500, y=405)
 l2 = ctk.CTkLabel(tab_1, text="We're happy that you've taken the first step towards a healthier you.\n We need a few details to kickstart your journey", font=('Century Gothic', 20), text_color="black", bg_color="#ffffff")
 l2.place(x=10, y=300)
-l3 = ctk.CTkLabel(tab_1, text=f"What is ur Name?", font=('Century Gothic', 30), text_color="black", bg_color="#ffffff")
+l3 = ctk.CTkLabel(tab_1, text="What is your name!", font=('Century Gothic', 30), text_color="black", bg_color="#ffffff")
 l3.place(x=200, y=400)
-name = ctk.CTkEntry(tab_1,  border_color="#94a8fe", placeholder_text= "Name", width=315, height=48, corner_radius=30, bg_color="#ffffff",placeholder_text_color='black')
-# print(current_user['username'])
+name = ctk.CTkEntry(tab_1,  border_color="#94a8fe", placeholder_text="Name", width=315, height=48, corner_radius=30, bg_color="#ffffff")
 name.place(x=185, y=470)
 nextbtn = ctk.CTkButton(tab_1,  border_color="#94a8fe", text="Next", width=100, height=30, corner_radius=30, bg_color="#ffffff", command=lambda: skip(2))
 

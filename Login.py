@@ -77,6 +77,4 @@ password_txt.place(x=135, y=315)
 nextbtn = ctk.CTkButton(login, border_width=1.5, border_color="#94a8fe", text="Login", width=100, height=30, corner_radius=30, bg_color="#ffffff", command=submit)
 nextbtn.place(x=225, y=400)
 
-
-def main():
-    login.mainloop()
+login.mainloop()

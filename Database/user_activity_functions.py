@@ -86,4 +86,3 @@ def update_sleep_hours(username,date,hours_sleep):
             print("Error occured while adding meal" , e)
 
 # update_water_consumed("AtharvaYadav",parsed_date,7) 
-print(get_water_consumed("AtharvaYadav",parsed_date))

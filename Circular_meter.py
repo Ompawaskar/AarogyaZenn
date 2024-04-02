@@ -105,11 +105,12 @@ class Meter(Frame):
         self.amounttotalvariable = IntVar(value=amounttotal)
         self.labelvariable = StringVar(value=labeltext)
         self.amountusedvariable.trace_add('write', self.draw_meter)
+        self.appearance = appearance_mode
 
         backgroundColor = ""
-        if appearance_mode == "Dark":
+        if self.appearance == "Dark":
             backgroundColor = "black"
-            print(appearance_mode)
+            print(self.appearance)
         else:
             backgroundColor = "white"
         # misc widget settings
@@ -283,6 +284,18 @@ class Meter(Frame):
             self.amountused = self.amountused - delta
         else:
             self.amountused = self.amountused + delta
+    
+    def change_appearance(self,new_appearance):
+        self.appearance = new_appearance
+        backgroundC = ""
+        if self.appearance == "Dark":
+            backgroundC = "black"
+            print(self.appearance)
+        else:
+            backgroundC = "white"
+        self.meter.configure(background=backgroundC)
+
+
 
 
 if __name__ == '__main__':

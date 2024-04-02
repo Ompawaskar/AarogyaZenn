@@ -4,6 +4,11 @@ user_meal = {
  'username':'AtharvaYadav'
 }
 
+current_user = {
+   
+}
+
+
 
 
 

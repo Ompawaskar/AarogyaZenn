@@ -10,6 +10,12 @@ from Database.meals_functions import get_nutrition_consumed
 from Database.user_activity_functions import get_water_consumed , update_water_consumed,get_hours_slept,update_sleep_hours
 from Watch.steps_walked import get_user_activity
 from datetime import datetime
+from globalStore import current_user
+# from Workout_page_changes import run_workout_page
+from final_workout import run_workout_page
+# from yoga import YogaScrollableFrame
+# from Workout_page_changes import ExerciseImageLoader
+
 
 date_string = "2024-03-29"
 parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
@@ -27,13 +33,14 @@ class Dashboard(customtkinter.CTk):
         self.geometry(str(Dashboard.WIDTH) + "x" + str(Dashboard.HEIGHT))
         self.minsize(Dashboard.WIDTH, Dashboard.HEIGHT)
         self.appearance_mode = "Light"
+        # print(current_user['username'])
         # self.today_date = datetime.today().date()
         self.today_nutrition_values = get_nutrition_consumed("AtharvaYadav",parsed_date)
 
-        self.totalCalories = 2600
+        self.totalCalories = 3000
         self.CaloriesUsed = self.today_nutrition_values["Total_Calories"]
 
-        self.protiens_target = 80 
+        self.protiens_target = 300
         self.protiens_consumed = self.today_nutrition_values["Total_Protein"]
         self.protiens_percent = self.protiens_consumed/self.protiens_target
 
@@ -108,20 +115,28 @@ class Dashboard(customtkinter.CTk):
                                                                 command=self.change_appearance_mode_event)
         self.appearance_mode_menu.grid(row=6, column=0, padx=20, pady=20, sticky="s")
 
+        self.frame_4_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="workout",
+                                                    fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
+                                                    image=self.add_user_image, anchor="w",  command=self.open_workout_page)
+        self.frame_4_button.grid(row=3, column=0, sticky="ew")
+
+
+
+  
+
         #create home frame
         self.home_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.home_frame.grid_columnconfigure(0, weight=1)
 
         self.home_frame.columnconfigure(0,weight=1)
-        # self.home_frame.rowconfigure(0,weight=1)
         self.home_frame.rowconfigure(0,weight=10)
         self.home_frame.rowconfigure(1,weight=20)
 
-        # self.header_frame = customtkinter.CTkFrame(self.home_frame,fg_color='red')
+        
         self.nutrition_frame = customtkinter.CTkFrame(self.home_frame)
         self.health_frame = customtkinter.CTkFrame(self.home_frame)
 
-        # self.header_frame.grid(row=0,column=0,sticky='nsew')
+      
         self.nutrition_frame.grid(row=0,column=0,sticky='nsew')
         self.health_frame.grid(row=1,column=0,sticky='nsew')
 
@@ -129,22 +144,8 @@ class Dashboard(customtkinter.CTk):
         self.nutrition_frame.rowconfigure(0,weight=1)
 
         self.calorie_frame = customtkinter.CTkFrame(self.nutrition_frame,fg_color=("white","black"),corner_radius=10)
-        # self.water_frame = customtkinter.CTkFrame(self.nutrition_frame,fg_color=("white","black"))
-
         self.calorie_frame.grid(row=0, column=0, sticky='nsew', padx=10,pady=10)
-        # self.water_frame.grid(row=0, column=1, sticky='nsew')
-
-        # self.water_frame.columnconfigure(0,weight=1)
-        # self.water_frame.rowconfigure(0,weight=1)
-
-        # self.water_subframe = customtkinter.CTkFrame(self.water_frame,fg_color=("white","black"))
-        # self.water_subframe.grid(row=0,column=0)
-
-        # self.water_subframe.columnconfigure(0,weight=1)
-        # self.water_subframe.columnconfigure(1,weight=4)
-        # self.water_subframe.columnconfigure(2,weight=1)
-        # self.water_subframe.rowconfigure(0,weight=1)
-
+        
         self.calorie_frame.columnconfigure(0,weight=2)
         self.calorie_frame.columnconfigure(1,weight=2)
         self.calorie_frame.columnconfigure(2,weight=1)
@@ -153,14 +154,6 @@ class Dashboard(customtkinter.CTk):
         self.meter = Meter(self.calorie_frame, metersize=180, padding=0, amountused= self.CaloriesUsed, amounttotal=self.totalCalories,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/spoon.png',wedgecolor='orange',appearance_mode= self.appearance_mode)
         self.meter.grid(row=0, column=0) 
-
-        # self.water_meter = Meter(self.water_subframe, metersize=180, padding=0, amountused=10, amounttotal=10,
-        #       labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./spoon-and-fork.png',wedgecolor='blue',appearance_mode= self.appearance_mode)
-        # self.water_meter.grid(row=0, column=1) 
-
-        # self.water_label = customtkinter.CTkLabel(self.water_frame,text='0 of 9 Glasses')
-        # self.water_label.grid(row=0,column=0,sticky='s')
-        
 
         self.calorie_frame2 = customtkinter.CTkFrame(self.calorie_frame,fg_color=("white","black"))
         self.calorie_frame2.grid(row=0,column=2,sticky='ew')
@@ -314,14 +307,15 @@ class Dashboard(customtkinter.CTk):
             
         # create second frame
         self.second_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        self.second_frame.columnconfigure( 0 , weight=1)
-        self.second_frame.rowconfigure( 0 , weight=1)
         
         # create third frame
         self.third_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
 
         # select default frame
         self.select_frame_by_name("home")
+
+    def open_workout_page(self):
+                run_workout_page()
 
     def select_frame_by_name(self, name):
         # set button color for selected button
@@ -388,44 +382,13 @@ class Dashboard(customtkinter.CTk):
         self.destroy()  
         track_meals.Track_meals().mainloop()
         
-    def inc_wt(self):
-        self.wt_lost += 1
-        print(self.wt_lost)
-        self.target_wt_meter = Meter(self.target_wt_frame, metersize=180, padding=0, amountused=self.wt_lost, amounttotal=self.max_wt_lost,
-              labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image= './assets/images/weight.png',wedgecolor='#99BC85',appearance_mode= self.appearance_mode)
-        self.target_wt_meter.pack_forget()
-        self.add_wt_button.destroy()
-        self.minus_wt_button.destroy()
-        self.target_wt_label.pack_forget()
-        self.target_wt_label2.pack_forget()
-       
-        self.target_wt_meter.pack(padx=45,pady=20)
-        self.add_wt_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
-        self.minus_wt_button.place(relx=0, rely=0.5, anchor='w')
-        self.target_wt_label.pack()
-        self.target_wt_label2.pack()
-
     def change_appearance_mode_event(self, new_appearance_mode):
         self.appearance_mode = new_appearance_mode
         customtkinter.set_appearance_mode(new_appearance_mode)
-        self.meter.grid_forget()
-        self.meter = Meter(self.calorie_frame, metersize=180, padding=0, amountused=2400, amounttotal=2600,
-              labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/spoon.png',wedgecolor='orange',appearance_mode= self.appearance_mode)
-        self.meter.grid(row=0, column=0) 
-        self.water_meter.grid_forget()
-        self.water_meter = Meter(self.water_subframe, metersize=180, padding=0, amountused=10, amounttotal=10,
-              labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./spoon-and-fork.png',wedgecolor='blue',appearance_mode= self.appearance_mode)
-        self.water_meter.grid(row=0, column=1) 
-        self.steps_meter.destroy()
-        self.calorie_burn_meter.destroy()
-        self.target_wt_meter.destroy()
-        self.steps_meter = Meter(self.steps_frame, metersize=180, padding=0, amountused=10, amounttotal=447,
-              labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./spoon-and-fork.png',wedgecolor='purple',appearance_mode= self.appearance_mode)
-        self.calorie_burn_meter = Meter(self.cal_burned_frame, metersize=180, padding=0, amountused=10, amounttotal=447,
-              labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./spoon-and-fork.png',wedgecolor='purple',appearance_mode= self.appearance_mode)
-        self.target_wt_meter = Meter(self.target_wt_frame, metersize=180, padding=0, amountused=10, amounttotal=447,
-              labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./spoon-and-fork.png',wedgecolor='purple',appearance_mode= self.appearance_mode)
-        self.steps_meter.pack(padx=45,pady=20)
-        self.calorie_burn_meter.pack(padx=45,pady=20)
-        self.target_wt_meter.pack(padx=45,pady=20)
+        self.meter.change_appearance(new_appearance_mode)
+        self.waterr_meter.change_appearance(new_appearance_mode)
+        self.steps_meter.change_appearance(new_appearance_mode)
+        self.calorie_burn_meter.change_appearance(new_appearance_mode)
+        self.self.target_wt_meter.change_appearance(new_appearance_mode)
+        
         

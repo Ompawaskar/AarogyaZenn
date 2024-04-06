@@ -80,16 +80,16 @@ class Progress(ctk.CTkFrame):
         self.canvas3.draw()  # Render the plot onto the canvas
         self.canvas3.get_tk_widget().pack()
 
-class App(ctk.CTk):
-    def __init__(self):
-        super().__init__()
-        self.geometry("1200x700")
-        self.grid_rowconfigure(0, weight=1)  # configure grid system
-        self.grid_columnconfigure(0, weight=1)
+# class App(ctk.CTk):
+#     def __init__(self):
+#         super().__init__()
+#         self.geometry("1200x700")
+#         self.grid_rowconfigure(0, weight=1)  # configure grid system
+#         self.grid_columnconfigure(0, weight=1)
 
-        self.my_frame = Progress(master=self)
-        self.my_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
+#         self.my_frame = Progress(master=self)
+#         self.my_frame.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
 
-app = App()
-app.mainloop()
+# app = App()
+# app.mainloop()

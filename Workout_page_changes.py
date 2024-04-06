@@ -46,9 +46,8 @@ class ExerciseApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Workout")
-        self.root.geometry("800x600")
+        self.root.geometry("1300x700")
         self.root.configure(bg="black") 
-        self.root.attributes("-fullscreen", True)  # Open in fullscreen mode
         self.custom_workout_page = None
         self.exercise_loader = ExerciseImageLoader()
         self.exercises = []
@@ -108,9 +107,7 @@ class ExerciseApp:
         self.search_button = tk.Button(search_frame, text="Search", command=self.search, bg="black", fg="white")
         self.search_button.pack(side=tk.LEFT)
         
-        custom_workout_label = tk.Label(search_frame, text="Custom Workout", bg="black", fg="white")
-        custom_workout_label.pack(side=tk.LEFT, padx=5)
-        custom_workout_label.bind("<Button-1>", lambda event: self.open_custom_workout_page())
+        
 
         self.canvas = tk.Canvas(self.root, bg="black")
         self.canvas.pack(side=tk.LEFT, fill="both", expand=True)
@@ -152,7 +149,7 @@ class ExerciseApp:
             widget.destroy()
 
         num_exercises = len(exercises_to_display)
-        num_columns = 4
+        num_columns = 3
         num_rows = -(-num_exercises // num_columns)  
 
         for i, exercise in enumerate(exercises_to_display):

@@ -22,13 +22,13 @@ class add_meals(customtkinter.CTk):
 
         # Create input frame
         self.input_frame = customtkinter.CTkFrame(self,bg_color='white',fg_color='white')
-        self.input_frame.grid(row=0, column=0, padx=10, pady=10,sticky='ew')
+        self.input_frame.grid(row=0, column=0, padx=0, pady=10,sticky='ew')
         self.input_frame.columnconfigure((0,1),weight=1)  # Place input frame using grid
         self.input_frame.rowconfigure(0,weight=1)  # Place input frame using grid
 
         # Create input field inside input frame
         self.input_field = customtkinter.CTkEntry(self.input_frame, placeholder_text="Search Food Name")
-        self.input_field.grid(row=0, column=0,padx=10, pady=10,sticky='nsew')
+        self.input_field.grid(row=0, column=0,padx=0, pady=10,sticky='nsew')
 
         self.resized_image = customtkinter.CTkImage(Image.open("./assets/images/orange_plus_image.png"))
         self.add_button = customtkinter.CTkButton(self.input_frame,text="Add item",fg_color='orange',command = self.open_meal_qty)

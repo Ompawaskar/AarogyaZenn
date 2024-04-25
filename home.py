@@ -9,15 +9,13 @@ from tkinter import PhotoImage
 import track_meals
 # from Database.Calculations import calculate_daily_calories
 from Database.meals_functions import get_nutrition_consumed,get_total_calories
-from Database.user_activity_functions import get_water_consumed , update_water_consumed,get_hours_slept,update_sleep_hours
+from Database.user_activity_functions import UserActivity
 from Watch.steps_walked import get_user_activity
 from datetime import datetime
 from globalStore import current_user,user_meal
 from progress_report import Progress
-import yoga
 import Workout_page_changes
-
-
+import track_meals
 
 date_string = "2024-03-29"
 # Get today's date
@@ -40,10 +38,10 @@ class Dashboard(customtkinter.CTk):
         self.title(Dashboard.APP_NAME)
         self.geometry(str(Dashboard.WIDTH) + "x" + str(Dashboard.HEIGHT))
         self.minsize(Dashboard.WIDTH, Dashboard.HEIGHT)
-        # self.appearance_mode = "Light"
-        
         self.user = current_user['username']
-        print(current_user['username'])
+        self.user_activity = UserActivity(self.user,parsed_date)
+        self.bind("<<MealSubmitted>>", self.handle_meal_submission)
+
         self.today_nutrition_values = get_nutrition_consumed(self.user,parsed_date)
         self.totalCalories = round(get_total_calories(self.user))
         self.CaloriesUsed = round(self.today_nutrition_values["Total_Calories"])
@@ -54,7 +52,6 @@ class Dashboard(customtkinter.CTk):
         self.carbs_target = round(self.get_max_nutritional_contents()['carbs_grams'])
         self.carbs_consumed = self.today_nutrition_values["Total_Carbohydrates"]
         self.carbs_percent = self.carbs_consumed/self.carbs_target
-
         self.fats_target = round(self.get_max_nutritional_contents()['fats_grams']) 
         self.fats_consumed = self.today_nutrition_values["Total_Fats"]
         self.fats_percent = self.fats_consumed/self.fats_target
@@ -64,7 +61,7 @@ class Dashboard(customtkinter.CTk):
         self.fiber_percent = self.fiber_consumed/self.fiber_target
 
         #User Activity
-        self.water_consumed = get_water_consumed(self.user,parsed_date)
+        self.water_consumed = self.user_activity.get_attribute('water_drank')
         self.calories_burned = get_user_activity(parsed_date,self.user)['cals']
         self.target_calories_burned = 2400
         self.current_weight = 80
@@ -72,9 +69,8 @@ class Dashboard(customtkinter.CTk):
         self.wt_lost = 0
         self.max_wt_lost = 15
         self.steps_walked = get_user_activity(parsed_date,self.user)['steps']
-        self.hours_slept = get_hours_slept(self.user,parsed_date)
-        
-        # self.resizable(False, False)
+        self.hours_slept =self.user_activity.get_attribute('hours_slept')
+
         # set grid layout 1x2
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -117,15 +113,6 @@ class Dashboard(customtkinter.CTk):
                                                       fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
                                                       image=self.add_user_image, anchor="w", command=self.frame_4_button_event)
         self.frame_4_button.grid(row=4, column=0, sticky="ew")
-
-        # self.appearance_mode_menu = customtkinter.CTkOptionMenu(self.navigation_frame, values=["Light", "Dark", "System"],
-        #                                                         command=self.change_appearance_mode_event)
-        # self.appearance_mode_menu.grid(row=6, column=0, padx=20, pady=20, sticky="s")
-
-        # self.frame_4_button = customtkinter.CTkButton(self.navigation_frame, corner_radius=0, height=40, border_spacing=10, text="workout",
-        #                                             fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
-        #                                             image=self.add_user_image, anchor="w",  command=self.frame)
-        # self.frame_4_button.grid(row=4, column=0, sticky="ew")
 
         #create home frame
         self.home_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="white")
@@ -243,7 +230,6 @@ class Dashboard(customtkinter.CTk):
         self.waterr_frame.grid(row=0,column=2)
         
 
-        
         #Creating 4 Cards
         self.calorie_burn_meter = Meter(self.cal_burned_frame, metersize=180, padding=0, amountused=self.calories_burned, amounttotal=self.target_calories_burned,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/runner3.png',wedgecolor='#41C9E2',appearance_mode= "Light")
@@ -253,7 +239,6 @@ class Dashboard(customtkinter.CTk):
         self.calorie_burn_meter.pack(padx=45,pady=20)
         self.calorie_burn_label.pack()
         self.calorie_burn_label2.pack(pady = 2)
-
 
         self.plus_image = customtkinter.CTkImage(Image.open("assets/images/black_plus.png"))
         self.minus_image = customtkinter.CTkImage(Image.open("assets/images/black_minus.png"))
@@ -269,7 +254,6 @@ class Dashboard(customtkinter.CTk):
         self.target_wt_label.pack()
         self.target_wt_label2.pack(pady = 1)
         # Place minus button on the left
-
 
         self.steps_meter = Meter(self.steps_frame, metersize=180, padding=0, amountused=self.steps_walked, amounttotal=10000,
               labeltext='', textappend='', meterstyle='info.TLabel', stripethickness=0,image='./assets/images/boots4.png',wedgecolor='#FBA834',appearance_mode= "Light")
@@ -313,15 +297,13 @@ class Dashboard(customtkinter.CTk):
         # create third frame
         self.third_frame = Progress(self)
         self.fourth_frame = Progress(self)
-        # self.third_frame = ExerciseApp(self)
 
-        # self.fourth_frame = YogaScrollableFrame(self)
-
-        # select default frame
+        #Meals Frame
+        # self.new_meals_frame = Track_meals(self)
+        # self.new_meals_frame = Progress(self)
+        
         self.select_frame_by_name("home")
 
-    # def open_workout_page(self):
-    #             run_workout_page()
 
     def select_frame_by_name(self, name):
         # set button color for selected button
@@ -329,7 +311,7 @@ class Dashboard(customtkinter.CTk):
         self.frame_2_button.configure(fg_color=("gray75", "gray25") if name == "frame_2" else "transparent")
         self.frame_3_button.configure(fg_color=("gray75", "gray25") if name == "frame_3" else "transparent")
         self.frame_4_button.configure(fg_color=("gray75", "gray25") if name == "frame_4" else "transparent")
-
+        
         # show selected frame
         if name == "home":
             self.home_frame.grid(row=0, column=1, sticky="nsew")
@@ -349,6 +331,11 @@ class Dashboard(customtkinter.CTk):
         else:
             self.fourth_frame.grid_forget()
 
+        # if name == "new_meals":
+        #     self.new_meals_frame.grid(row=0, column=1, sticky="nsew")
+        # else:
+        #     self.new_meals_frame.grid_forget()
+
     def home_button_event(self):
        
         self.select_frame_by_name("home")
@@ -358,12 +345,14 @@ class Dashboard(customtkinter.CTk):
         self.select_frame_by_name("frame_2")
 
     def frame_3_button_event(self):
-        os.system('python yoga.py')
+        # os.system('python yoga.py')
+
         self.select_frame_by_name("frame_3")
 
     def frame_4_button_event(self):
         self.select_frame_by_name("frame_4")
 
+    
     def adjust_water_glass(self, delta):
         if delta < 0:  
             self.waterr_meter.step(delta=-1)
@@ -373,7 +362,8 @@ class Dashboard(customtkinter.CTk):
             self.water_consumed -= 1
 
         self.waterr_label.configure(text=f"{self.water_consumed} of 10")
-        update_water_consumed(self.user,parsed_date,self.water_consumed)
+        self.user_activity.update_attribute(username = self.user, date = parsed_date,value=self.water_consumed,
+                                             attribute_name = 'water_drank' )
 
     def adjust_weight_meter(self, delta):
         if delta < 0:  
@@ -394,13 +384,17 @@ class Dashboard(customtkinter.CTk):
             self.hours_slept -= 1
 
         self.sleep_label2.configure(text=f"{self.hours_slept} of 7")
-        update_sleep_hours(self.user,parsed_date,self.hours_slept)
-
+        self.user_activity.update_attribute(username = self.user, date = parsed_date,value=self.hours_slept,
+                                             attribute_name = 'hours_slept' )
+        
     def open_daily_meals(self):
         user_meal['username'] = current_user['username']
-        self.destroy()  
+        # os.system('python track_meals.py')
+        # self.destroy()
         track_meals.Track_meals().mainloop()
-
+        # self.select_frame_by_name("new_meals")
+        
+        
     def get_max_nutritional_contents(self):
         protein_percentage = 0.15  # 15%
         fiber_grams = 25  # grams
@@ -425,14 +419,12 @@ class Dashboard(customtkinter.CTk):
             "fats_grams": fats_grams,
             "carbs_grams": carbs_grams
         }
-        
-    # def change_appearance_mode_event(self, new_appearance_mode):
-    #     self.appearance_mode = new_appearance_mode
-    #     customtkinter.set_appearance_mode(new_appearance_mode)
-    #     self.meter.change_appearance(new_appearance_mode)
-    #     self.waterr_meter.change_appearance(new_appearance_mode)
-    #     self.steps_meter.change_appearance(new_appearance_mode)
-    #     self.calorie_burn_meter.change_appearance(new_appearance_mode)
-    #     self.self.target_wt_meter.change_appearance(new_appearance_mode)
+
+    def handle_meal_submission(self):
+       self.today_nutrition_values = get_nutrition_consumed(self.user,parsed_date)
+       self.CaloriesUsed = round(self.today_nutrition_values["Total_Calories"])
+       print(self.CaloriesUsed)
+
+
         
         

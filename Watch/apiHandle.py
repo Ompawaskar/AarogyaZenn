@@ -4,9 +4,9 @@ import base64
 # Replace these with your actual values
 client_id = "23RS2V"
 client_secret = "42ea0a7b62bc34f180562befe7f6284d"
-authorization_code = "50df245fa3e84a443f9c0237f610b3ece0f49d21"
+authorization_code = "18de1e364b3b3ee3ddd52532c755a8971ab3c052"
 redirect_uri = "http://127.0.0.1:8080/"
-code_verifier = "6FfwJ9zspCl1v9y-x3miQSPCP-IdfzoBHAdh4bzKuC1W7hMZZQyEjUEKbw"
+code_verifier = "QC5Uf3A7ZhdGn95gBMmPS3ADS-GU0ZCVnfJKO_Ia2xr3CwXYDtX_l3-lRA"
 
 # Fitbit token endpoint URL
 token_url = "https://api.fitbit.com/oauth2/token"

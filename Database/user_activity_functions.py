@@ -1,9 +1,5 @@
 from Database.db_connection import connection
 from datetime import datetime,timedelta
-import pprint
-
-date_string = "2024-03-29"
-parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
 
 def create_activity(username,date):
      try:
@@ -26,7 +22,35 @@ def create_activity(username,date):
               print("Created Succesfully!")
      except Exception as e:
             print("Error occured while getting water consumed" , e)
+
+class UserActivity:
+    def __init__(self, username, date):
+        try:
+            self.db = connection()
+            self.activity_collection = self.db["user_activity"]
+            self.activity_document = self.activity_collection.find_one(
+                {'username': username, 'date': date})
+        except Exception as e:
+            print("Error getting activity collection", e)
+
+    def get_attribute(self, attribute_name):
+        try:
+            return self.activity_document[attribute_name]
+        except KeyError as e:
+            print(f"Error: Attribute '{attribute_name}' not found", e)
+
+    def update_attribute(self, username, date, attribute_name, value):
+        try:
+            self.activity_collection.update_one(
+                {'username': username, 'date': date},
+                {"$set": {attribute_name: value}})
+        except Exception as e:
+            print(f"Error occurred while updating '{attribute_name}'", e)
+
      
+
+          
+           
 def get_water_consumed(username,date):
      try:
          db = connection()

@@ -24,6 +24,7 @@ class add_meals2(customtkinter.CTk):
    
     def __init__(self,nutrition_info, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.parent = home.Dashboard
         self.load_images()
         self.title(add_meals2.APP_NAME)
         self.geometry(str(add_meals2.WIDTH) + "x" + str(add_meals2.HEIGHT))
@@ -165,14 +166,21 @@ class add_meals2(customtkinter.CTk):
         self.fiber_qty.configure(text= f"{globalStore.user_meal['fiber']}g") 
 
     def load_images(self):
-        image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./assets/images")
-        self.protien_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "protien.png")))
-        self.carbs_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "carbs.png")))
-        self.fats_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "fats.png")))
-        self.fiber_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "fibre.png")))
+        # image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./assets/images")
+        self.protien_image = None
+        self.carbs_image = None
+        self.fats_image = None
+        self.fiber_image = None
         # self.main_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "food1.png")))
-        self.image2 = Image.open("./assets/images/food1.png")
-        self.photo = ImageTk.PhotoImage(self.image2)
+        self.image2 = None
+        self.photo = None
+        # self.protien_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "protien.png")))
+        # self.carbs_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "carbs.png")))
+        # self.fats_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "fats.png")))
+        # self.fiber_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "fibre.png")))
+        # # self.main_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "food1.png")))
+        # self.image2 = Image.open("./assets/images/food1.png")
+        # self.photo = ImageTk.PhotoImage(self.image2)
    
     def submit_meal(self):
         quantity = self.quantity.get()
@@ -183,8 +191,10 @@ class add_meals2(customtkinter.CTk):
         globalStore.user_meal['date'] = parsed_date
         # print(globalStore.user_meal)
         add_meal(globalStore.user_meal)
+        self.parent.event_generate("<<MealSubmitted>>")
         self.destroy()
-        home.Dashboard().mainloop()
+        
+        # home.Dashboard().mainloop()
         
         
 if __name__ == '__main__':

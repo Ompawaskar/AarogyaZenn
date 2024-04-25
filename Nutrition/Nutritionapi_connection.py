@@ -31,7 +31,7 @@ def nutritional_info(food):
         user_meal['carbs'] = carbs
         user_meal['fats'] = fats
         user_meal['fiber'] = fiber
-        print(user_meal)
+        
 
         # units = res['foods'][0]["alt_measures"]
         # user_meal['units'] = units

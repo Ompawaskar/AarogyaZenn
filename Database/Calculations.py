@@ -4,7 +4,6 @@ try:
     db = connection()
     users_collection = db['Users']
     userInfo = users_collection.information.user_info
-    print(type(users_collection))
 except Exception as e:
     print("Error connecting:",e)
 

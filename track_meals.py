@@ -169,9 +169,12 @@ class Track_meals(customtkinter.CTk):
     def load_images(self):
         try:
             image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./assets/images")
-            self.recipe = customtkinter.CTkImage(Image.open(os.path.join(image_path, "recipe.png")), size=(26, 26))
-            self.resized_image1 = customtkinter.CTkImage(Image.open(os.path.join(image_path, "diet_plan.png")), size=(26, 26))
-            self.resized_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "orange_plus_image.png")), size=(26, 26))
+            self.recipe = None
+            self.resized_image1 = None
+            self.resized_image = None
+            # self.recipe = customtkinter.CTkImage(Image.open(os.path.join(image_path, "recipe.png")), size=(26, 26))
+            # self.resized_image1 = customtkinter.CTkImage(Image.open(os.path.join(image_path, "diet_plan.png")), size=(26, 26))
+            # self.resized_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "orange_plus_image.png")), size=(26, 26))
         except Exception as e:
             print("Error loading images:", e)
 

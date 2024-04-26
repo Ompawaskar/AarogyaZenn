@@ -39,8 +39,9 @@ class Dashboard(customtkinter.CTk):
         self.geometry(str(Dashboard.WIDTH) + "x" + str(Dashboard.HEIGHT))
         self.minsize(Dashboard.WIDTH, Dashboard.HEIGHT)
         self.user = current_user['username']
+        print(self.user)
         self.user_activity = UserActivity(self.user,parsed_date)
-        self.bind("<<MealSubmitted>>", self.handle_meal_submission)
+        # self.bind("<<MealSubmitted>>", self.handle_meal_submission)
 
         self.today_nutrition_values = get_nutrition_consumed(self.user,parsed_date)
         self.totalCalories = round(get_total_calories(self.user))
@@ -249,8 +250,13 @@ class Dashboard(customtkinter.CTk):
         self.add_wt_button = customtkinter.CTkButton(self.target_wt_frame,image=self.plus_image,text ="",fg_color='transparent',width=20, command=lambda: self.adjust_weight_meter(delta=-1))
         self.minus_wt_button = customtkinter.CTkButton(self.target_wt_frame,image=self.minus_image,text ="",fg_color='transparent',width=20, command=lambda: self.adjust_weight_meter(delta=1))
         self.target_wt_meter.pack(padx=45,pady=20)
-        self.add_wt_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
-        self.minus_wt_button.place(relx=0, rely=0.5, anchor='w')
+        # For the plus button
+        self.add_wt_button.place(relx=1, rely=0.5, anchor='e', x=-4)  # Adjust x position to add padding
+
+        # For the minus button
+        self.minus_wt_button.place(relx=0, rely=0.5, anchor='w', x=4)  # Adjust x position to add padding
+
+
         self.target_wt_label.pack()
         self.target_wt_label2.pack(pady = 1)
         # Place minus button on the left
@@ -271,11 +277,11 @@ class Dashboard(customtkinter.CTk):
         self.add_sleep_button = customtkinter.CTkButton(self.watch_frame,image=self.plus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_sleep_hours(delta=-0.5))
         self.minus_sleep_button = customtkinter.CTkButton(self.watch_frame,image=self.minus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_sleep_hours(delta=0.5))
         self.sleep_meter.pack(padx=45,pady=20)
-        self.add_sleep_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
-        self.minus_sleep_button.place(relx=0, rely=0.5, anchor='w')
+        self.add_sleep_button.place(relx=1, rely=0.5, anchor='e', x=-4)  # Place plus button at center right
+        self.minus_sleep_button.place(relx=0, rely=0.5, anchor='w', x=4)
        
         self.sleep_label.pack()
-        self.sleep_label2.pack()
+        self.sleep_label2.pack(pady = 1)
 
         #Water Meter
 
@@ -286,10 +292,10 @@ class Dashboard(customtkinter.CTk):
         self.add_water_button = customtkinter.CTkButton(self.waterr_frame,image=self.plus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_water_glass(delta=-1))
         self.minus_water_button = customtkinter.CTkButton(self.waterr_frame,image=self.minus_image,text ="",fg_color='transparent',width=20,command=lambda: self.adjust_water_glass(delta=1))
         self.waterr_meter.pack(padx=45,pady=20)
-        self.add_water_button.place(relx=1, rely=0.5, anchor='e')  # Place plus button at center right
-        self.minus_water_button.place(relx=0, rely=0.5, anchor='w')
+        self.add_water_button.place(relx=1, rely=0.5, anchor='e', x=-4)  # Place plus button at center right
+        self.minus_water_button.place(relx=0, rely=0.5, anchor='w', x=4)
         self.waterr_label.pack()
-        self.waterr_label2.pack()
+        self.waterr_label2.pack(pady = 1)
             
         # create second frame
         self.second_frame = Progress(self)
@@ -345,7 +351,7 @@ class Dashboard(customtkinter.CTk):
         self.select_frame_by_name("frame_2")
 
     def frame_3_button_event(self):
-        # os.system('python yoga.py')
+        os.system('python yoga.py')
 
         self.select_frame_by_name("frame_3")
 
@@ -391,10 +397,12 @@ class Dashboard(customtkinter.CTk):
         user_meal['username'] = current_user['username']
         # os.system('python track_meals.py')
         # self.destroy()
-        track_meals.Track_meals().mainloop()
+        track_meals_window = track_meals.Track_meals(self.handle_meal_submission)
+        track_meals_window.mainloop()
+        
+
         # self.select_frame_by_name("new_meals")
-        
-        
+            
     def get_max_nutritional_contents(self):
         protein_percentage = 0.15  # 15%
         fiber_grams = 25  # grams
@@ -423,8 +431,32 @@ class Dashboard(customtkinter.CTk):
     def handle_meal_submission(self):
        self.today_nutrition_values = get_nutrition_consumed(self.user,parsed_date)
        self.CaloriesUsed = round(self.today_nutrition_values["Total_Calories"])
-       print(self.CaloriesUsed)
+       self.meter.update_values(self.CaloriesUsed)
+       self.calorie_frame3_label1.configure(text=f"{self.CaloriesUsed} of {self.totalCalories}")
+ 
+       self.protiens_consumed = self.today_nutrition_values["Total_Protein"]
+       self.protiens_percent = self.protiens_consumed/self.protiens_target
+       self.progress_bar1_label.configure(text=f"Protien: {self.protiens_consumed} of {self.protiens_target} g") 
+       
+       self.carbs_consumed = self.today_nutrition_values["Total_Carbohydrates"]
+       self.carbs_percent = self.carbs_consumed/self.carbs_target
+       self.progress_bar2_label.configure(text=f"Carbs: {self.carbs_consumed} of {self.carbs_target} g") 
+        
+       self.fats_consumed = self.today_nutrition_values["Total_Fats"]
+       self.fats_percent = self.fats_consumed/self.fats_target
+       self.progress_bar3_label.configure(text=f"Fats: {self.fats_consumed} of {self.fats_target} g") 
 
+       self.fiber_consumed = self.today_nutrition_values["Total_Fiber"]
+       self.fiber_percent = self.fiber_consumed/self.fiber_target
+       self.progress_bar4_label.configure(text=f"Fiber: {self.fiber_consumed} of {self.fiber_target} g")
+
+       self.progress_bar1.set(self.protiens_percent)
+       self.progress_bar2.set(self.carbs_percent)
+       self.progress_bar3.set(self.fats_percent)
+       self.progress_bar4.set(self.fiber_percent)
+
+       print("Callback Successful",self.CaloriesUsed)
+    
 
         
         

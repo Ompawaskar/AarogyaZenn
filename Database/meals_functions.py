@@ -1,11 +1,14 @@
 from Database.db_connection import connection
 from datetime import datetime
-import pprint
+from bson import ObjectId
+
+
 
 def add_meal(meal):
        try:
          db = connection()
          meals_collection = db["meals"]
+         meal["_id"] = ObjectId()
          meals_collection.insert_one(meal)
          print("Meal added succesfully!")
        except Exception as e:

@@ -22,8 +22,9 @@ class add_meals2(customtkinter.CTk):
     WIDTH =  400
     HEIGHT = 550
    
-    def __init__(self,nutrition_info, *args, **kwargs):
+    def __init__(self,nutrition_info,callback, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.callback = callback
         self.parent = home.Dashboard
         self.load_images()
         self.title(add_meals2.APP_NAME)
@@ -191,7 +192,8 @@ class add_meals2(customtkinter.CTk):
         globalStore.user_meal['date'] = parsed_date
         # print(globalStore.user_meal)
         add_meal(globalStore.user_meal)
-        self.parent.event_generate("<<MealSubmitted>>")
+        print("User Meal:", globalStore.user_meal)
+        self.callback()
         self.destroy()
         
         # home.Dashboard().mainloop()

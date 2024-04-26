@@ -284,6 +284,11 @@ class Meter(Frame):
             self.amountused = self.amountused - delta
         else:
             self.amountused = self.amountused + delta
+
+    def update_values(self,updated_val):
+        self.amountused = updated_val
+
+
     
     def change_appearance(self,new_appearance):
         self.appearance = new_appearance

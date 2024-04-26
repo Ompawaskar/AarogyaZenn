@@ -39,9 +39,9 @@ def authenticate(username, password):
     db = connection()
     Users = db["Users@aarogyazen"]
     user = Users.find_one({"username": username})
+    print(user)
     current_user['username'] = user['username']
     
-
     if user:
         # Hash the provided password with the stored salt
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), user['salt'])

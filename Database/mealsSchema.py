@@ -8,18 +8,22 @@ parsed_date = datetime.strptime(date_string, "%Y-%m-%d")
 
 
 meal_example = {
-    "Total_Calories": 500.25,
-    "protein": 25.75,
-    "fats": 20.5,
-    "fiber": 8.3,
-    "carbohydrates": 60.2,
-    "username": "john_doe",
-    "meal_type": "lunch",
-    "meal_name": "Chicken Salad",
+    "Total_Calories": 500.5,
+    "protein": 25.3,
+    "fats": 20.7,
+    "fiber": 10.2,
+    "carbohydrates": 60.8,
+    "username": "example_user",
+    "meal_type": "breakfast",
+    "meal_name": "Scrambled Eggs",
     "units": "grams",
-    "quantity": 300.0,  
+    "quantity": 200.0,
     "date": parsed_date
 }
+
+
+meal_example2 = meal_example
+meal_example2['Total_Calories'] = 100
 
 
 schema_validation = {
@@ -87,7 +91,8 @@ def create_collection():
 # create_collection()
         
 #Example user
-# add_meal(meal_example)
+add_meal(meal_example)
+# add_meal(meal_example2)
 
 
 
